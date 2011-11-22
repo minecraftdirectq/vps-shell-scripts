@@ -113,7 +113,7 @@ cat 0 0 * * 0 /path/to/script/stop.sh >> crondump
 cat 0 * * * * /path/to/script/restart.sh >> crondump
 cat 0 * * * * /path/to/script/backuphr.sh >> crondump
 cat 0 0 * * * /path/to/script/backupday.sh >> crondump
-crontab -l < crondump
+crontab crondump
 clear
 
 
