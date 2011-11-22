@@ -45,7 +45,7 @@ echo @----------------------------------@
 
 
 echo "Downloading!!!"
-wget -q -c http://dl.dropbox.com/u/34781951/scriptneed.zip
+wget -q -c https://github.com/downloads/minecraftdirectq/vps-shell-scripts/scriptneed.zip
 
 lbar
 
