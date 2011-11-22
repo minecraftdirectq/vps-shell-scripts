@@ -135,15 +135,18 @@ echo Adding lots of alias.
 echo “alias startall='/root/scripts/start.sh'” >> ~/.profile
 
 echo setting up MySql
+echo Get ready to set it up :D
+sleep 15
 
 apt-get install mysql-server mysql-client
 
-echo What do you want the pass to be?
 
-read mysqlpass
 
-$mysqlpass
-$mysqlpass
+echo Installing Apache2 and php5
+apt-get install apache2
+apt-get install php5 libapache2-mod-php5
+/etc/init.d/apache2 restart
+
 
 echo "done"
 echo ""
