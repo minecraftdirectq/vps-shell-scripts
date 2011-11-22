@@ -129,7 +129,6 @@ sed -i 's/  java -server -Xms1024M -Xmx2250M -jar craftbukkit.jar/  java -server
 
 echo Adding lots of alias.
 echo “alias startall='/root/scripts/start.sh'” >> ~/.profile
->>>>>>> 623810e7b4708f008ecf3705e9bb783155e51ece
 
 
 echo "done"
