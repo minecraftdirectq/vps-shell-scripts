@@ -44,7 +44,22 @@ echo @          INSTALLING STUFF        @
 echo @----------------------------------@
 
 
-echo "Downloading!!!"
+echo "prepare for lots of text, click "y" if prompted!"
+
+sudo apt-get install sun-java6-jre sun-java6-plugin
+sudo update-java-alternatives -s java-6-sun
+sudo apt-get install screen
+sudo apt-get install rdiff
+sudo apt-get install rdiff-backup
+sudo apt-get install zip
+sudo apt-get install unzip
+sudo gnome-terminal -x sudo update-java-alternatives -s java-6-sun
+sudo apt-get update
+
+echo @----------------------------------@
+echo @          DLING THINGS :P         @
+echo @----------------------------------@
+
 wget -q -c https://github.com/downloads/minecraftdirectq/vps-shell-scripts/scriptneed.zip
 
 lbar
@@ -58,19 +73,6 @@ mkdir /root/minecraft
 mkdir /root/backups
 mkdir /root/logs
 
-dots
-dots
-dots
-
-echo "prepare for lots of text, click "y" if prompted!"
-
-sudo apt-get install sun-java6-jre sun-java6-plugin
-sudo update-java-alternatives -s java-6-sun
-sudo apt-get install screen
-sudo apt-get install rdiff
-sudo apt-get install rdiff--backup
-sudo gnome-terminal -x sudo update-java-alternatives -s java-6-sun
-sudo apt-get update
 
 clear
 
@@ -78,7 +80,7 @@ clear
 echo ""
 echo ""
 echo "------------------------------------"
-echo "@       Full install done!!!        @"
+echo "@       Full install done!!!       @"
 echo "------------------------------------"
 echo ""
 echo "------------------------------------"
