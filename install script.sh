@@ -117,8 +117,7 @@ crontab crondump
 clear
 
 echo Adding lots of alias.
-cd ~
-cat alias startall='/root/scripts/start.sh' >> .profile
+echo “alias startall='/root/scripts/start.sh'” >> ~/.profile
 
 
 echo "done"
