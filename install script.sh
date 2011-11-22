@@ -147,6 +147,10 @@ apt-get install apache2
 apt-get install php5 libapache2-mod-php5
 /etc/init.d/apache2 restart
 
+cd /var/www/
+wget -q -c http://wordpress.org/latest.zip
+mv latest.zip /var/www/
+unzip latest.zip
 
 echo "done"
 echo ""
