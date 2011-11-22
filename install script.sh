@@ -116,6 +116,15 @@ cat 0 0 * * * /path/to/script/backupday.sh >> crondump
 crontab crondump
 clear
 
+echo The ram for -Xms
+read ram
+
+echo The ram for -Xmx
+read ram2
+
+sed -i 's/  java -server -Xms1024M -Xmx2250M -jar craftbukkit.jar/  java -server -Xms$ramM -Xmx$ram2M -jar craftbukkit.jar/g' /root/scripts/run.sh
+
+
 echo Adding lots of alias.
 echo “alias startall='/root/scripts/start.sh'” >> ~/.profile
 
