@@ -43,10 +43,14 @@ echo @----------------------------------@
 echo @          INSTALLING STUFF        @
 echo @----------------------------------@
 
+sudo su
 
 echo "prepare for lots of text, click "y" if prompted!"
 
+sudo apt-get install bash
+
 sudo apt-get install sun-java6-jre sun-java6-plugin
+apt-get install apache2
 sudo update-java-alternatives -s java-6-sun
 sudo apt-get install screen
 sudo apt-get install rdiff
@@ -130,6 +134,16 @@ sed -i 's/  java -server -Xms1024M -Xmx2250M -jar craftbukkit.jar/  java -server
 echo Adding lots of alias.
 echo “alias startall='/root/scripts/start.sh'” >> ~/.profile
 
+echo setting up MySql
+
+apt-get install mysql-server mysql-client
+
+echo What do you want the pass to be?
+
+read mysqlpass
+
+$mysqlpass
+$mysqlpass
 
 echo "done"
 echo ""
