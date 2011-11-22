@@ -1,7 +1,1 @@
-Start the shell and let it rip :P
-
-
-Commit 1: read me
-commit 2: Readme[Start the shell and let it rip :P]
-commit 3: Scripts[Q:shouldnt this be part one..... A:F OFF]
-commit 4: ur reading it :D
+A series of scripts to setup a VPS (as root) to run a Minecraft Bukkit server and Mumble (soon to have choices for TeamSpeak and Ventrilo)
