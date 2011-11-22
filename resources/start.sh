@@ -1,0 +1,7 @@
+screen -d -m -S "mumble"
+screen -S "mumble" -p 0 -X stuff "cd /root/murmur/"
+screen -S "mumble" -p 0 -X stuff "/root/murmur/murmur.x86"
+screen -d -m -S "mc"
+screen -S "mc" -p 0 -X stuff "cd /home/mco/minecraft/"
+screen -S "mc" -p 0 -X stuff "/home/mco/minecraft/scripts/run.sh"
+screen -S "mc" -p 0 -X stuff ""
