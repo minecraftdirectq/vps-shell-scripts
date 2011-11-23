@@ -12,6 +12,10 @@
 # Description:    Starts the bukkit.jar server
 ### END INIT INFO
 
+# This init.d script is based off the one which can be found at 
+# http://www.minecraftwiki.net/wiki/Server_startup_script
+# but has been modified by NixonInnes to suit the bukkit server.
+
 ####################################################
 # Parameters
 ####################################################
