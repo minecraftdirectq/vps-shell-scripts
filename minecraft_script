@@ -250,20 +250,20 @@ exit 0
 #!/bin/bash
 
 ### BEGIN INIT INFO
-# Provides:   bukkit.jar
+# Provides:   craftbukkit.jar
 # Required-Start: $local_fs $remote_fs
 # Required-Stop:  $local_fs $remote_fs
 # Should-Start:   $network
 # Should-Stop:    $network
 # Default-Start:  2 3 4 5
 # Default-Stop:   0 1 6
-# Short-Description:    bukkit.jar server
-# Description:    Starts the bukkit.jar server
+# Short-Description:    craftbukkit.jar server
+# Description:    Starts the craftbukkit.jar server
 ### END INIT INFO
 
 # This init.d script is based off the one which can be found at 
 # http://www.minecraftwiki.net/wiki/Server_startup_script
-# but has been modified by NixonInnes to suit the bukkit server.
+# but has been modified by NixonInnes to suit the craftbukkit server.
 
 ####################################################
 # Parameters
@@ -275,29 +275,29 @@ INSTALLDIR = "/opt/minecraft"
 # Number of CPUs system has
 CPU_COUNT = 1
 
-# Minimum RAM for bukkit to use
+# Minimum RAM for craftbukkit to use
 MINRAM = 512M
 
-# Maximum RAM for bukkit to use
+# Maximum RAM for craftbukkit to use
 MAXRAM = 1024M
 
-# System user name for running bukkit server
+# System user name for running craftbukkit server
 USERNAME = "mcuser"
 
 # How old (in days) backups will be cleaned from the system
 OLDDAYS = 7
 
-# Backup directory for bukkit server
+# Backup directory for craftbukkit server
 BACKUPDIR = "$INSTALLDIR/backup/"
 
-# Date stamp used for bukkit backups
+# Date stamp used for craftbukkit backups
 DATE = `date "+%Y.%m.%d-%H:%M"`
 
-# URL for updating bukkit
-BUKKIT_URL = http://ci.bukkit.org/job/dev-CraftBukkit/promotion/latest/Recommended/artifact/target/craftbukkit-0.0.1-SNAPSHOT.jar
+# URL for updating craftbukkit
+BUKKIT_URL = http://ci.craftbukkit.org/job/dev-CraftBukkit/promotion/latest/Recommended/artifact/target/craftbukkit-0.0.1-SNAPSHOT.jar
 
-# Invocation for starting bukkit server
-INVOCATION = "java -Xms$MINRAM -Xmx$MAXRAM -XX:ParallelGCThreads=$CPU_COUNT -jar bukkit.jar nogui"
+# Invocation for starting craftbukkit server
+INVOCATION = "java -Xms$MINRAM -Xmx$MAXRAM -XX:ParallelGCThreads=$CPU_COUNT -jar craftbukkit.jar nogui"
 
 # Used to check who the user is
 ME = `whoami`
@@ -317,89 +317,89 @@ as_user() {
 }
 
 mc_start() {
-  if ps ax | grep -v grep | grep -v -i SCREEN | grep bukkit.jar > /dev/null
+  if ps ax | grep -v grep | grep -v -i SCREEN | grep craftbukkit.jar > /dev/null
   then
-    echo "bukkit.jar is already running!"
+    echo "craftbukkit.jar is already running!"
   else
-    echo "Starting bukkit.jar..."
-    as_user "cd $INSTALLDIR && screen -dmS bukkit.jar $INVOCATION"
+    echo "Starting craftbukkit.jar..."
+    as_user "cd $INSTALLDIR && screen -dmS craftbukkit.jar $INVOCATION"
     sleep 7
-    if ps ax | grep -v grep | grep -v -i SCREEN | grep bukkit.jar > /dev/null
+    if ps ax | grep -v grep | grep -v -i SCREEN | grep craftbukkit.jar > /dev/null
     then
-      echo "bukkit.jar is now running."
+      echo "craftbukkit.jar is now running."
     else
-      echo "Error! Could not start bukkit.jar!"
+      echo "Error! Could not start craftbukkit.jar!"
     fi
   fi
 }
 
 mc_saveoff() {
-  if ps ax | grep -v grep | grep -v -i SCREEN | grep bukkit.jar > /dev/null
+  if ps ax | grep -v grep | grep -v -i SCREEN | grep craftbukkit.jar > /dev/null
   then
-    echo "bukkit.jar is running... suspending saves"
-    as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"say Starting server backup...\"\015'"
-    as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"save-off\"\015'"
-    as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"save-all\"\015'"
+    echo "craftbukkit.jar is running... suspending saves"
+    as_user "screen -p 0 -S craftbukkit.jar -X eval 'stuff \"say Starting server backup...\"\015'"
+    as_user "screen -p 0 -S craftbukkit.jar -X eval 'stuff \"save-off\"\015'"
+    as_user "screen -p 0 -S craftbukkit.jar -X eval 'stuff \"save-all\"\015'"
     sync
     sleep 10
   else
-    echo "bukkit.jar is not running. Not suspending saves."
+    echo "craftbukkit.jar is not running. Not suspending saves."
   fi
 }
 
 mc_saveon() {
-  if ps ax | grep -v grep | grep -v -i SCREEN | grep bukkit.jar > /dev/null
+  if ps ax | grep -v grep | grep -v -i SCREEN | grep craftbukkit.jar > /dev/null
   then
-    echo "bukkit.jar is running... re-enabling saves"
-    as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"save-on\"\015'"
-    as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"say End of server backup...\"\015'"
+    echo "craftbukkit.jar is running... re-enabling saves"
+    as_user "screen -p 0 -S craftbukkit.jar -X eval 'stuff \"save-on\"\015'"
+    as_user "screen -p 0 -S craftbukkit.jar -X eval 'stuff \"say End of server backup...\"\015'"
   else
-    echo "bukkit.jar is not running. Not resuming saves."
+    echo "craftbukkit.jar is not running. Not resuming saves."
   fi
 }
 
 mc_stop() {
-  if ps ax | grep -v grep | grep -v -i SCREEN | grep bukkit.jar > /dev/null
+  if ps ax | grep -v grep | grep -v -i SCREEN | grep craftbukkit.jar > /dev/null
   then
-    echo "Stopping bukkit.jar"
-    as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"say Server shutting down imminently...\"\015'"
-    as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"say Saving world...\"\015'"
-    as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"save-all\"\015'"
-    as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"stop\"\015'"
+    echo "Stopping craftbukkit.jar"
+    as_user "screen -p 0 -S craftbukkit.jar -X eval 'stuff \"say Server shutting down imminently...\"\015'"
+    as_user "screen -p 0 -S craftbukkit.jar -X eval 'stuff \"say Saving world...\"\015'"
+    as_user "screen -p 0 -S craftbukkit.jar -X eval 'stuff \"save-all\"\015'"
+    as_user "screen -p 0 -S craftbukkit.jar -X eval 'stuff \"stop\"\015'"
   else
-    echo "bukkit.jar was not running."
+    echo "craftbukkit.jar was not running."
   fi
-  if ps ax | grep -v grep | grep -v -i SCREEN | grep bukkit.jar > /dev/null
+  if ps ax | grep -v grep | grep -v -i SCREEN | grep craftbukkit.jar > /dev/null
   then
-    echo "Error! bukkit.jar could not be stopped."
+    echo "Error! craftbukkit.jar could not be stopped."
   else
-    echo "bukkit.jar is stopped."
+    echo "craftbukkit.jar is stopped."
   fi
 }
 
 mc_update() {
-  if ps ax | grep -v grep | grep -v -i SCREEN | grep bukkit.jar > /dev/null
+  if ps ax | grep -v grep | grep -v -i SCREEN | grep craftbukkit.jar > /dev/null
   then
-    echo "bukkit.jar is running! Will not start update."
+    echo "craftbukkit.jar is running! Will not start update."
   else
-    as_user "cd $INSTALLDIR && wget -q -O $INSTALLDIR/bukkit.jar.update $BUKKIT_URL"
-    if [ -f $INSTALLDIR/bukkit.jar.update ]
+    as_user "cd $INSTALLDIR && wget -q -O $INSTALLDIR/craftbukkit.jar.update $BUKKIT_URL"
+    if [ -f $INSTALLDIR/craftbukkit.jar.update ]
     then
-      if `diff $INSTALLDIR/bukkit.jar $INSTALLDIR/bukkit.jar.update >/dev/null`
+      if `diff $INSTALLDIR/craftbukkit.jar $INSTALLDIR/craftbukkit.jar.update >/dev/null`
       then
-        echo "You are already running the latest version of bukkit.jar."
+        echo "You are already running the latest version of craftbukkit.jar."
       else
-        as_user "mv $INSTALLDIR/bukkit.jar.update $INSTALLDIR/bukkit.jar"
-        echo "bukkit.jar successfully updated."
+        as_user "mv $INSTALLDIR/craftbukkit.jar.update $INSTALLDIR/craftbukkit.jar"
+        echo "craftbukkit.jar successfully updated."
       fi
     else
-      echo "bukkit.jar update could not be downloaded."
+      echo "craftbukkit.jar update could not be downloaded."
     fi
   fi
 }
 
 mc_backup() {
-   echo "Backing up bukkit.jar server..."
+   echo "Backing up craftbukkit.jar server..."
    echo "Checking for backup folder..."
    if [ -d $BACKUPDIR ]
    then
@@ -424,7 +424,7 @@ mc_backup() {
        then
          continue
        else
-         as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"say Backing up world...\"\015'"
+         as_user "screen -p 0 -S craftbukkit.jar -X eval 'stuff \"say Backing up world...\"\015'"
          as_user "tar -zcf $BACKUPDIR/backup_$DATE-$i.tar.gz $INSTALLDIR"
          echo "Backed up world"
          as_user "find $BACKUPDIR/* -mtime +$OLDDAYS -exec rm {} \;"
@@ -432,7 +432,7 @@ mc_backup() {
        fi
      done
    else
-     as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"say Backing up world file...\"\015'"
+     as_user "screen -p 0 -S craftbukkit.jar -X eval 'stuff \"say Backing up world file...\"\015'"
      as_user "tar -zcf $BACKUPDIR/backup_$DATE.tar.gz $INSTALLDIR"
      echo "Backed up world"
      as_user "find $BACKUPDIR/* -mtime +$OLDDAYS -exec rm {} \;"
@@ -444,10 +444,10 @@ mc_command() {
   if [ "$1" ]
   then
     command="$1";
-    if ps ax | grep -v grep | grep -v -i SCREEN | grep bukkit.jar > /dev/null
+    if ps ax | grep -v grep | grep -v -i SCREEN | grep craftbukkit.jar > /dev/null
     then
-      echo "bukkit.jar is running... executing command"
-      as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"$command\"\015'"
+      echo "craftbukkit.jar is running... executing command"
+      as_user "screen -p 0 -S craftbukkit.jar -X eval 'stuff \"$command\"\015'"
     fi
     else
       echo "Must specify server command"
@@ -478,11 +478,11 @@ case "$1" in
     mc_saveon
     ;;
   status)
-    if ps ax | grep -v grep | grep -v -i SCREEN | grep bukkit.jar > /dev/null
+    if ps ax | grep -v grep | grep -v -i SCREEN | grep craftbukkit.jar > /dev/null
     then
-      echo "bukkit.jar is running."
+      echo "craftbukkit.jar is running."
     else
-      echo "bukkit.jar is not running."
+      echo "craftbukkit.jar is not running."
     fi
     ;;
   command)
