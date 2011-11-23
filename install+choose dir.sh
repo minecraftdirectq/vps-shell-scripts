@@ -3,7 +3,7 @@ clear
 echo @-------------------------------------------@
 echo @        BUKKIT SERVER SETUP SCRIPT         @
 echo @-------------------------------------------@
-echo @        Credits                            @ 
+echo @        Credits                            @
 echo @          -Khobbits                        @
 echo @          -Darklust                        @
 echo @          -GravyPod                        @
