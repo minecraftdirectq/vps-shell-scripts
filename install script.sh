@@ -108,14 +108,27 @@ echo @----------------------------------@
 echo Editing cron!
 dots
 echo Dumping file!
-crontab -l > crondump
-echo @reboot /path/to/script/start.sh >> /root/crondump
-echo 0 0 * * 0 /path/to/script/stop.sh >> crondump
-echo 0 * * * * /path/to/script/restart.sh >> crondump
-echo 0 * * * * /path/to/script/backuphr.sh >> crondump
-echo 0 0 * * * /path/to/script/backupday.sh >> crondump
+
+
+cat > crondump << EOF
+@reboot /path/to/script/start.sh
+0 0 * * 0 /path/to/script/stop.sh
+0 * * * * /path/to/script/restart.sh
+0 * * * * /path/to/script/backuphr.sh
+0 0 * * * /path/to/script/backupday.sh
+EOF
 crontab crondump
 clear
+
+
+#crontab -l > crondump
+#echo @reboot /path/to/script/start.sh >> /root/crondump
+#echo 0 0 * * 0 /path/to/script/stop.sh >> crondump
+#echo 0 * * * * /path/to/script/restart.sh >> crondump
+#echo 0 * * * * /path/to/script/backuphr.sh >> crondump
+#echo 0 0 * * * /path/to/script/backupday.sh >> crondump
+#crontab crondump
+#clear
 
 
 echo @----------------------------------@
@@ -130,7 +143,30 @@ read ram
 echo Max Ram in Megabytes:
 read ram2
 
-sed -i 's/ java -server -Xms1024M -Xmx2250M -jar craftbukkit.jar/ java -server -Xms$ramM -Xmx$ram2M -jar craftbukkit.jar/g' /root/scripts/run.sh
+
+
+
+cd root/scripts/
+cat > run.sh << EOF
+#!/bin/bash
+cd /root/minecraft/
+while true
+do
+  java -server -Xms$ramM -Xmx$ram2M -jar craftbukkit.jar
+  echo "You have stoped the server click CTRL-C to fully stop!"
+	sleep 1
+	echo "3"
+	sleep 1
+	echo "2"
+	sleep 1
+	echo "1"
+done
+exit $?
+EOF
+crontab crondump
+clear
+
+#sed -i 's/ java -server -Xms1024M -Xmx2250M -jar craftbukkit.jar/ java -server -Xms$ramM -Xmx$ram2M -jar craftbukkit.jar/g' /root/scripts/run.sh
 
 echo Adding lots of alias.
 echo �alias startall='/root/scripts/start.sh'� >> ~/.profile
