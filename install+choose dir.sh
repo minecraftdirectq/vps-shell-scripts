@@ -1,20 +1,22 @@
 !/bin/bash
 clear
-echo @-------------------------------------------@
-echo @        BUKKIT SERVER SETUP SCRIPT         @
-echo @-------------------------------------------@
-echo @        Credits                            @
-echo @          -Khobbits                        @
-echo @          -Darklust                        @
-echo @          -GravyPod                        @
-echo @          -Tyrantelf                       @
-echo @          -NixonInnes                      @
-echo @-------------------------------------------@
+echo "@-------------------------------------------@"
+echo "@        BUKKIT SERVER SETUP SCRIPT         @"
+echo "@-------------------------------------------@"
+echo "@        Credits                            @"
+echo "@          -Khobbits                        @"
+echo "@          -Darklust                        @"
+echo "@          -GravyPod                        @"
+echo "@          -Tyrantelf                       @"
+echo "@          -NixonInnes                      @"
+echo "@-------------------------------------------@"
 
 ####################################################
 # Default parameters
 ####################################################
 D_INSTALLDIR = /opt/minecraft/
+WP_URL = http://dl.dropbox.com/u/34781951/www.zip
+SCRIPTS_URL = http://dl.dropbox.com/u/34781951/scriptneed.zip
 
 
 ####################################################
@@ -58,9 +60,7 @@ function pause() {
 # INITIALISATION
 ####################################################
 
-####################################################
 # Check if the script is being run by a root user
-####################################################
 
 if [[ $EUID -ne 0 ]]; then
    echo "You should run this script as a root user, or using 'sudo'." 1>&2
@@ -89,10 +89,14 @@ if [ ! -d "$INSTALLDIR" ]; then
   mkdir $INSTALLDIR
 fi
 
+# Create a temporary working directory
+mkdir $INSTALLDIR/temp
+TEMPDIR = "$INSTALLDIR/temp"
 
-echo @----------------------------------@
-echo @          INSTALLING STUFF        @
-echo @----------------------------------@
+
+echo "@----------------------------------@"
+echo "@          INSTALLING STUFF        @"
+echo "@----------------------------------@"
 
 echo "Preparing to install packages;"
 echo "you may be required to press 'y' if prompted"
@@ -112,37 +116,34 @@ sudo gnome-terminal -x sudo update-java-alternatives -s java-6-sun
 sudo apt-get update
 
 
-echo @----------------------------------@
-echo @          DLING THINGS :P         @
-echo @----------------------------------@
+echo "@----------------------------------@"
+echo "@          DLING THINGS :P         @"
+echo "@----------------------------------@"
 
 # potentially include these files with the setup script, rather than downloading them. This way if in the future we can taylor packages accordingly by simply modifying the setup script. -nix
-wget http://dl.dropbox.com/u/34781951/scriptneed.zip
+wget -O $TEMPDIR/scriptsneed.zip $SCRIPTS_URL 
 
 lbar
-
-sudo mv scriptneed.zip $installdir/
-lbar
-unzip scriptneed.zip
+unzip -d $INSTALLDIR/ scriptneed.zip
 lbar
 
 # should be checks before this to make sure they dont already exist
-sudo mkdir $installdir/testerver
-sudo mkdir $installdir/minecraft
-sudo mkdir $installdir/backups
-sudo mkdir $installdir/logs
+sudo mkdir $INSTALLDIR/testerver
+sudo mkdir $INSTALLDIR/minecraft
+sudo mkdir $INSTALLDIR/backups
+sudo mkdir $INSTALLDIR/logs
 
 clear
 
 
-echo @-----------------------------------@
-echo @    Script Downloading done!!!     @
-echo @-----------------------------------@
+echo "@-----------------------------------@"
+echo "@    Script Downloading done!!!     @"
+echo "@-----------------------------------@"
 
 dots
 
 # probably better practise to use absolute references, just in case.. -nix
-cd $installdir/scipts/
+cd $INSTALLDIR/scipts/
 sudo chmod +x start.sh
 sudo chmod +x run.sh
 sudo chmod +x stop.sh
@@ -153,63 +154,63 @@ sudo chmod +x change-murmur-super-pass.sh
 
 lbar
 
-echo Congfiging screen!
+echo "Congfiging screen!"
 sudo sed -i 's/#startup_message off/startup_message on/g' /etc/screenrc
 
 
-echo @----------------------------------@
-echo @            cron time :>          @
-echo @----------------------------------@
+echo "@----------------------------------@"
+echo "@            cron time :>          @"
+echo "@----------------------------------@"
 
-echo Editing cron!
+echo "Editing cron!"
 dots
-echo Dumping file!
+echo "Dumping file!"
 crontab -l > /tmp/crondump
-echo Inserting jobs into cron!
+echo "Inserting jobs into cron!"
 dots
 
 # I think that the server management should be handled by a single script installed as a service, so it can be managed simply via "service bukkit start/stop/restart/update/backup" this will also make unning on startup cleaner. -nix
-sudo cat @reboot $installdir/start.sh >> /tmp/crondump
-sudo cat 0 0 * * 0 $installdir/stop.sh >> /tmp/crondump
-sudo cat 0 * * * * $installdir/restart.sh >> /tmp/crondump
-sudo cat 0 0 * * * $installdir/backupday.sh >> /tmp/crondump
+sudo cat @reboot $INSTALLDIR/start.sh >> /tmp/crondump
+sudo cat 0 0 * * 0 $INSTALLDIR/stop.sh >> /tmp/crondump
+sudo cat 0 * * * * $INSTALLDIR/restart.sh >> /tmp/crondump
+sudo cat 0 0 * * * $INSTALLDIR/backupday.sh >> /tmp/crondump
 crontab /tmp/crondump
-echo Cron Done!
+echo "Cron Done!"
 sleep 5
 clear
 
 
-echo @---------------------------------------------@
-echo @          Configuring Bukkit Server          @
-echo @---------------------------------------------@
+echo "@---------------------------------------------@"
+echo "@          Configuring Bukkit Server          @"
+echo "@---------------------------------------------@"
 
 dots
 
 # We should add some helpful info for the user in here; see cat /proc/meminfo -nix
-echo Minimum RAM in Megabytes to allocate server:
+echo "Minimum RAM in Megabytes to allocate server:"
 read ram
 
-echo Maximum Ram in Megabytes to allocate server:
+echo "Maximum Ram in Megabytes to allocate server:"
 read ram2
 
 sed -i 's/  java -server -Xms1024M -Xmx2250M -jar craftbukkit.jar/  java -server -Xms$ramM -Xmx$ram2M -jar craftbukkit.jar/g' /root/scripts/run.sh
 
-echo Adding lots of alias.
-echo “alias startall='$installdir/start.sh'” >> ~/.profile
+echo "Adding lots of alias."
+echo “alias startall='$INSTALLDIR/start.sh'” >> ~/.profile
 
 # I think the following mysql / php / httpd/apache should be an optional install -nix
-echo @----------------------------------@
-echo @           mysql/apache           @
-echo @----------------------------------@
+echo "@----------------------------------@"
+echo "@           mysql/apache           @"
+echo "@----------------------------------@"
 
 
-echo setting up MySql
-echo Get ready to set it up :D
+echo "setting up MySql"
+echo "Get ready to set it up :D"
 sleep 15
 
 apt-get install mysql-server mysql-client
 
-echo Installing Apache2 and php5
+echo "Installing Apache2 and php5"
 
 
 sudo apt-get install apache2
@@ -219,8 +220,8 @@ sudo apt-get install php5 libapache2-mod-php5
 
 sudo apt-get install php5-mysql php5-curl php5-gd php5-idn php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-ming php5-ps php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl
 
-echo Get ready to config stuff.... Web server to reconfigure automatically: <-- apache2
-echo Configure database for phpmyadmin with dbconfig-common? <-- No
+echo "Get ready to config stuff.... Web server to reconfigure automatically: <-- apache2"
+echo "Configure database for phpmyadmin with dbconfig-common? <-- No"
 sleep 20
 
 
@@ -231,8 +232,8 @@ echo @----------------------------------@
 
 sudo apt-get install phpmyadmin
 
-cd /var/www/
-wget -q -c http://dl.dropbox.com/u/34781951/www.zip
+wget -q -c -O $TEMPDIR/WP.zip $WP_URL
+unzip -d /var/www/ $TEMPDIR/WP.zip 
 
 
 echo "------------------------------------"
