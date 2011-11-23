@@ -6,6 +6,7 @@ echo "@     Credits                               @"
 echo "@     -Khobbits                             @"
 echo "@     -Darklust                             @"
 echo "@     -Tyrant                               @"
+echo "@     -NixonInnes [inspiration/dev          @"
 echo "@-------------------------------------------@"
 
 ####################################################
