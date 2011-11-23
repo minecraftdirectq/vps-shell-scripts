@@ -162,7 +162,7 @@ echo @----------------------------------@
 
 apt-get install phpmyadmin
 
-cd ~
+cd /root/
 ln -s site /var/www
 echo "@----------------------@"
 echo "Rebooting To Finnish :>!"
