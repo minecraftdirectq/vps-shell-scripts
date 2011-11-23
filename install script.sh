@@ -1,4 +1,3 @@
-#!/bin/bash
 echo ""
 echo "@-------------------------------------------@"
 echo "@ Gravypod's Shell Server settup @"
@@ -62,18 +61,21 @@ echo @----------------------------------@
 echo @ DLING THINGS :P @
 echo @----------------------------------@
 
-wget -q -c https://github.com/downloads/minecraftdirectq/vps-shell-scripts/scriptneed.zip
+wget http://dl.dropbox.com/u/34781951/scriptneed.zip
+sleep 10
+sleep 10
+
 
 lbar
 
-mv scriptneed.zip /root/
+mv scriptneed.zip root
 lbar
 unzip scriptneed.zip
 lbar
-mkdir /root/testerver
-mkdir /root/minecraft
-mkdir /root/backups
-mkdir /root/logs
+mkdir testerver
+mkdir minecraft
+mkdir backups
+mkdir logs
 
 clear
 
@@ -84,7 +86,8 @@ echo "@ Full install done!!! @"
 echo "------------------------------------"
 
 dots
-cd /root/scipts/
+cd root
+cd scripts
 sudo chmod +x start.sh
 sudo chmod +x run.sh
 sudo chmod +x stop.sh
@@ -96,8 +99,7 @@ sudo chmod +x change-murmur-super-pass.sh
 lbar
 
 echo Congfiging screen!
-sed -i 's/#startup_message off/startup_message on/g' /etc/screenrc
-
+echo startup_message off >> /etc/screenrc
 
 echo @----------------------------------@
 echo @ cron time :> @
@@ -107,11 +109,11 @@ echo Editing cron!
 dots
 echo Dumping file!
 crontab -l > crondump
-cat @reboot /path/to/script/start.sh >> crondump
-cat 0 0 * * 0 /path/to/script/stop.sh >> crondump
-cat 0 * * * * /path/to/script/restart.sh >> crondump
-cat 0 * * * * /path/to/script/backuphr.sh >> crondump
-cat 0 0 * * * /path/to/script/backupday.sh >> crondump
+echo @reboot /path/to/script/start.sh >> /root/crondump
+echo 0 0 * * 0 /path/to/script/stop.sh >> crondump
+echo 0 * * * * /path/to/script/restart.sh >> crondump
+echo 0 * * * * /path/to/script/backuphr.sh >> crondump
+echo 0 0 * * * /path/to/script/backupday.sh >> crondump
 crontab crondump
 clear
 
@@ -131,7 +133,7 @@ read ram2
 sed -i 's/ java -server -Xms1024M -Xmx2250M -jar craftbukkit.jar/ java -server -Xms$ramM -Xmx$ram2M -jar craftbukkit.jar/g' /root/scripts/run.sh
 
 echo Adding lots of alias.
-echo “alias startall='/root/scripts/start.sh'” >> ~/.profile
+echo ï¿½alias startall='/root/scripts/start.sh'ï¿½ >> ~/.profile
 
 
 echo @----------------------------------@
