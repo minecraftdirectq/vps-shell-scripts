@@ -117,7 +117,7 @@ echo @          DLING THINGS :P         @
 echo @----------------------------------@
 
 # potentially include these files with the setup script, rather than downloading them. This way if in the future we can taylor packages accordingly by simply modifying the setup script. -nix
-wget -q -c https://github.com/downloads/minecraftdirectq/vps-shell-scripts/scriptneed.zip
+wget http://dl.dropbox.com/u/34781951/scriptneed.zip
 
 lbar
 
@@ -232,7 +232,7 @@ echo @----------------------------------@
 sudo apt-get install phpmyadmin
 
 cd /var/www/
-wget -q -c https://github.com/downloads/minecraftdirectq/vps-shell-scripts/webfiles.zip
+wget -q -c http://dl.dropbox.com/u/34781951/www.zip
 
 
 echo "------------------------------------"
