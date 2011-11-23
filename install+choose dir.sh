@@ -88,6 +88,7 @@ fi
 if [ ! -d "$INSTALLDIR" ]; then
   mkdir $INSTALLDIR
 fi
+# sed 's/install_dir_here/$INSTALLDIR/g' minecraft_script  --or something like this to fill the minecraft_script with the correct direcory -nix
 
 # Create a temporary working directory
 mkdir $INSTALLDIR/temp
@@ -188,12 +189,17 @@ dots
 
 # We should add some helpful info for the user in here; see cat /proc/meminfo -nix
 echo "Minimum RAM in Megabytes to allocate server:"
-read ram
+read MINRAM # You need to sanitise this entry (make sure it is a number & in a suitable range) -nix
+MINRAM = "${MINRAM}M" # appends the M for megabytes onto the input (I HOPE!) -nix
+sed 's/minram_here/$MINRAM/g' minecraft_script  # or something like this to fill the minecraft_script with the correct stuff -nix
 
 echo "Maximum Ram in Megabytes to allocate server:"
-read ram2
+read MAXRAM # You need to sanitise this entry (make sure it is a number & in a suitable range) -nix
+MAXRAM = "${MAXRAM}M" # appends the M for megabytes onto the input -nix
+sed 's/maxram_here/$MAXRAM/g' minecraft_script  # or something like this to fill the minecraft_script with the correct stuff -nix
 
-sed -i 's/  java -server -Xms1024M -Xmx2250M -jar craftbukkit.jar/  java -server -Xms$ramM -Xmx$ram2M -jar craftbukkit.jar/g' /root/scripts/run.sh
+# This is now redundant with init.d script (minecraft_script) -nix
+# sed -i 's/  java -server -Xms1024M -Xmx2250M -jar craftbukkit.jar/  java -server -Xms$ramM -Xmx$ram2M -jar craftbukkit.jar/g' /root/scripts/run.sh
 
 echo "Adding lots of alias."
 echo “alias startall='$INSTALLDIR/start.sh'” >> ~/.profile
