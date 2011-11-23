@@ -241,7 +241,7 @@ case "$1" in
     ;;
 
   *)
-  echo "Usage: /etc/init.d/bukkit.jar {start|stop|update|backup|status|restart|command \"server command\"}"
+  echo "Usage: /etc/init.d/minecraft {start|stop|update|backup|status|restart|command \"server command\"}"
   exit 1
   ;;
 esac
