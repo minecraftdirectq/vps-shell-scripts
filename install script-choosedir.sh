@@ -1,15 +1,15 @@
 #!/bin/bash
 echo ""
 echo "@-------------------------------------------@"
-echo "@     Gravypod's Shell Server settup        @"
+echo "@     Tyrantelf's Shell Server settup       @"
 echo "@        Credits                            @" 
 echo "@        -Khobbits                          @"
 echo "@        -Darklust                          @"
-echo "@        -Tyrantelf "GitHub Guy"            @"
+echo "@        -GravyPod                          @"
 echo "@-------------------------------------------@"
 
 ####################################################
-# FUNCS
+# Loading Funcitons
 ####################################################
 counter=1
 function dots {
@@ -36,8 +36,9 @@ echo
 }
 
 ####################################################
-# FUNCS
+# Choose install Dir and install necessary packages
 ####################################################
+
 echo "Absolute Directory Path (/path/to/directory) for install:"
 read installdir
 
@@ -45,12 +46,12 @@ echo @----------------------------------@
 echo @          INSTALLING STUFF        @
 echo @----------------------------------@
 
-sudo su
-
-echo "prepare for lots of text, click "y" if prompted!"
-
+echo "Prepare for lots of text, click "y" if prompted!"
+echo "If your not running this as root, you will need to enter your password."
+sleep 10
+sudo cat deb http://archive.canonical.com/ lucid partner >> /etc/apt/sources.list
+sudo apt-get update
 sudo apt-get install sun-java6-jre sun-java6-plugin
-apt-get install apache2
 sudo update-java-alternatives -s java-6-sun
 sudo apt-get install screen
 sudo apt-get install rdiff
@@ -68,21 +69,20 @@ wget -q -c https://github.com/downloads/minecraftdirectq/vps-shell-scripts/scrip
 
 lbar
 
-mv scriptneed.zip $installdir/
+sudo mv scriptneed.zip $installdir/
 lbar
 unzip scriptneed.zip
 lbar
-mkdir $installdir/testerver
-mkdir $installdir/minecraft
-mkdir $installdir/backups
-mkdir $installdir/logs
+sudo mkdir $installdir/testerver
+sudo mkdir $installdir/minecraft
+sudo mkdir $installdir/backups
+sudo mkdir $installdir/logs
 
 clear
 
-echo ""
-echo ""
+
 echo "------------------------------------"
-echo "@       Full install done!!!       @"
+echo "@    Script Downloading done!!!     @"
 echo "------------------------------------"
 
 dots
@@ -98,7 +98,7 @@ sudo chmod +x change-murmur-super-pass.sh
 lbar
 
 echo Congfiging screen!
-sed -i 's/#startup_message off/startup_message on/g' /etc/screenrc
+sudo sed -i 's/#startup_message off/startup_message on/g' /etc/screenrc
 
 
 echo @----------------------------------@
@@ -108,13 +108,16 @@ echo @----------------------------------@
 echo Editing cron!
 dots
 echo Dumping file!
-crontab -l > crondump
-cat @reboot $installdir/start.sh >> crondump
-cat 0 0 * * 0 $installdir/stop.sh >> crondump
-cat 0 * * * * $installdir/restart.sh >> crondump
-cat 0 * * * * $installdir/backuphr.sh >> crondump
-cat 0 0 * * * $installdir/backupday.sh >> crondump
-crontab crondump
+crontab -l > /tmp/crondump
+echo Inserting jobes into cron!
+dots
+sudo cat @reboot $installdir/start.sh >> /tmp/crondump
+sudo cat 0 0 * * 0 $installdir/stop.sh >> /tmp/crondump
+sudo cat 0 * * * * $installdir/restart.sh >> /tmp/crondump
+sudo cat 0 0 * * * $installdir/backupday.sh >> /tmp/crondump
+crontab /tmp/crondump
+echo Cron Done!
+sleep 5
 clear
 
 
@@ -150,12 +153,12 @@ apt-get install mysql-server mysql-client
 echo Installing Apache2 and php5
 
 
-apt-get install apache2
-apt-get install php5 libapache2-mod-php5
+sudo apt-get install apache2
+sudo apt-get install php5 libapache2-mod-php5
 
 /etc/init.d/apache2 restart
 
-apt-get install php5-mysql php5-curl php5-gd php5-idn php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-ming php5-ps php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl
+sudo apt-get install php5-mysql php5-curl php5-gd php5-idn php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-ming php5-ps php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl
 
 echo Get ready to config stuff.... Web server to reconfigure automatically: <-- apache2
 echo Configure database for phpmyadmin with dbconfig-common? <-- No
@@ -167,13 +170,15 @@ echo @             PhpMyAdmin           @
 echo @----------------------------------@
 
 
-apt-get install phpmyadmin
+sudo apt-get install phpmyadmin
 
 cd /var/www/
 wget -q -c https://github.com/downloads/minecraftdirectq/vps-shell-scripts/webfiles.zip
 
 
-echo "SUCCESS!"
+echo "------------------------------------"
+echo "@       Full install done!!!       @"
+echo "------------------------------------"
 echo "Rebooting To Finnish :>!"
 
 dots
