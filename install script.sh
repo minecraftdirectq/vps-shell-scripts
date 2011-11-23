@@ -118,7 +118,7 @@ echo @----------------------------------@
 
 echo Minimum RAM in Megabytes:
 read ram
-
+echo ""
 echo Max Ram in Megabytes:
 read ram2
 
