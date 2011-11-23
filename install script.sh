@@ -151,10 +151,9 @@ apt-get install php5-mysql php5-curl php5-gd php5-idn php-pear php5-imagick php5
 
 rm /var/www/index.html
 wget http://dl.dropbox.com/u/34781951/www.zip
-mv www.zip /var
-rm /var/www
-unzip /var/www.zip
-rm /var/www.zip
+mv www.zip /var/www/
+unzip /var/www/www.zip
+rm /var/www/www.zip
 
 echo @----------------------------------@
 echo @ PhpMyAdmin @
@@ -163,8 +162,7 @@ echo @----------------------------------@
 
 apt-get install phpmyadmin
 
-cd /root/
-ln -s site /var/www
+ln -s /var/www/
 echo "@----------------------@"
 echo "Rebooting To Finnish :>!"
 echo "@----------------------@"
