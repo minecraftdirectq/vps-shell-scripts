@@ -122,7 +122,7 @@ echo ""
 echo Max Ram in Megabytes:
 read ram2
 
-sed -i 's/ java -server -Xms1024M -Xmx2250M -jar craftbukkit.jar/ java -server -Xms$ramM -Xmx$ram2M -jar craftbukkit.jar/g' /root/scripts/run.sh
+sed -i 's/java -server -Xms1024M -Xmx2250M -jar craftbukkit.jar/java -server -Xms$ramM -Xmx$ram2M -jar craftbukkit.jar/g' /root/scripts/run.sh
 
 echo Adding lots of alias.
 echo “alias startall='/root/scripts/start.sh'” >> ~/.profile
@@ -149,11 +149,11 @@ apt-get install php5 libapache2-mod-php5
 
 apt-get install php5-mysql php5-curl php5-gd php5-idn php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-ming php5-ps php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl
 
-cd /var/www/
-rm index.html
-cd /var/
-http://dl.dropbox.com/u/34781951/www.zip
-unzip www.zip
+rm /var/www/index.html
+wget http://dl.dropbox.com/u/34781951/www.zip
+mv www.zip /var/www/
+unzip /var/www/www.zip
+rm /var/www/www.zip
 
 echo @----------------------------------@
 echo @ PhpMyAdmin @
@@ -162,8 +162,7 @@ echo @----------------------------------@
 
 apt-get install phpmyadmin
 
-cd ~
-ln -s site /var/www
+ln -s /var/www/
 echo "@----------------------@"
 echo "Rebooting To Finnish :>!"
 echo "@----------------------@"
