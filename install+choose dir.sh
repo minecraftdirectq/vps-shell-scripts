@@ -94,7 +94,7 @@ echo @----------------------------------@
 echo @          INSTALLING STUFF        @
 echo @----------------------------------@
 
-echo Preparing to install packages;"
+echo "Preparing to install packages;"
 echo "you may be required to press 'y' if prompted"
 pause "Press any key to continue..."
 # this next line is ugly, we should just crack in a new repo. A better solution would be to check the OS version and add the appropriate package -nix
@@ -135,9 +135,9 @@ sudo mkdir $installdir/logs
 clear
 
 
-echo "------------------------------------"
-echo "@    Script Downloading done!!!     @"
-echo "------------------------------------"
+echo @-----------------------------------@
+echo @    Script Downloading done!!!     @
+echo @-----------------------------------@
 
 dots
 
