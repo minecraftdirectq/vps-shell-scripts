@@ -152,6 +152,7 @@ apt-get install php5-mysql php5-curl php5-gd php5-idn php-pear php5-imagick php5
 rm /var/www/index.html
 wget http://dl.dropbox.com/u/34781951/www.zip
 mv www.zip /var
+rm /var/www
 unzip /var/www.zip
 rm /var/www.zip
 
