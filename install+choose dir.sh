@@ -101,7 +101,7 @@ echo "@----------------------------------@"
 echo "Preparing to install packages;"
 echo "you may be required to press 'y' if prompted"
 pause "Press any key to continue..."
-# this next line is ugly, we should just crack in a new repo. A better solution would be to check the OS version and add the appropriate package -nix
+# this next line is ugly, we shouldnt just crack in a new repo. A better solution would be to check the OS version and add the appropriate package -nix
 sudo cat deb http://archive.canonical.com/ lucid partner >> /etc/apt/sources.list
 sudo apt-get update
 sudo apt-get install sun-java6-jre sun-java6-plugin
