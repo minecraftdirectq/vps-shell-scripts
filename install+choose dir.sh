@@ -88,11 +88,32 @@ fi
 if [ ! -d "$INSTALLDIR" ]; then
   mkdir $INSTALLDIR
 fi
-# sed 's/install_dir_here/$INSTALLDIR/g' minecraft_script  --or something like this to fill the minecraft_script with the correct direcory -nix
+sed 's/install_dir_here/$INSTALLDIR/g' minecraft_script  # TODO: or something like this to fill the minecraft_script with the correct direcory -nix
 
 # Create a temporary working directory
 mkdir $INSTALLDIR/temp
 TEMPDIR = "$INSTALLDIR/temp"
+
+# We should add some helpful info for the user in here; see cat /proc/meminfo -nix
+echo "Minimum RAM in Megabytes to allocate server:"
+read MINRAM # TODO: You need to sanitise this entry (make sure it is a number & in a suitable range) -nix
+MINRAM = "${MINRAM}M" # appends the M for megabytes onto the input (I HOPE!) -nix
+sed 's/minram_here/$MINRAM/g' $INSTALLDIR/minecraft_script  # TODO: or something like this to fill the minecraft_script with the correct stuff -nix
+
+echo "Maximum Ram in Megabytes to allocate server:"
+read MAXRAM # TODO: You need to sanitise this entry (make sure it is a number & in a suitable range) -nix
+MAXRAM = "${MAXRAM}M" # appends the M for megabytes onto the input -nix
+sed 's/maxram_here/$MAXRAM/g' $INSTALLDIR/minecraft_script  # TODO: or something like this to fill the minecraft_script with the correct stuff -nix
+
+# This is now redundant with init.d script (minecraft_script) -nix
+# sed -i 's/  java -server -Xms1024M -Xmx2250M -jar craftbukkit.jar/  java -server -Xms$ramM -Xmx$ram2M -jar craftbukkit.jar/g' /root/scripts/run.sh
+#echo "Adding lots of alias."
+#echo “alias startall='$INSTALLDIR/start.sh'” >> ~/.profile
+
+# Move the minecraft_script into the init.d and install it as a service -nix
+cp $INSTALLDIR/minecraft_script /etc/init.d/minecraft
+chmod a+x /etc/init.d/minecraft
+update-rc.d minecraft defaults
 
 
 echo "@----------------------------------@"
@@ -102,7 +123,7 @@ echo "@----------------------------------@"
 echo "Preparing to install packages;"
 echo "you may be required to press 'y' if prompted"
 pause "Press any key to continue..."
-# this next line is ugly, we shouldnt just crack in a new repo. A better solution would be to check the OS version and add the appropriate package -nix
+# TODO: this next line is ugly, we shouldnt just crack in a new repo. A better solution would be to check the OS version and add the appropriate package -nix
 sudo cat deb http://archive.canonical.com/ lucid partner >> /etc/apt/sources.list
 sudo apt-get update
 sudo apt-get install sun-java6-jre sun-java6-plugin
@@ -128,7 +149,7 @@ lbar
 unzip -d $INSTALLDIR/ scriptneed.zip
 lbar
 
-# should be checks before this to make sure they dont already exist
+# TODO: should be checks before this to make sure they dont already exist
 sudo mkdir $INSTALLDIR/testerver
 sudo mkdir $INSTALLDIR/minecraft
 sudo mkdir $INSTALLDIR/backups
@@ -163,46 +184,29 @@ echo "@----------------------------------@"
 echo "@            cron time :>          @"
 echo "@----------------------------------@"
 
-echo "Editing cron!"
-dots
-echo "Dumping file!"
-crontab -l > /tmp/crondump
-echo "Inserting jobs into cron!"
-dots
+#echo "Editing cron!"
+#dots
+#echo "Dumping file!"
+#crontab -l > /tmp/crondump
+#echo "Inserting jobs into cron!"
+#dots
 
 # I think that the server management should be handled by a single script installed as a service, so it can be managed simply via "service bukkit start/stop/restart/update/backup" this will also make unning on startup cleaner. -nix
-sudo cat @reboot $INSTALLDIR/start.sh >> /tmp/crondump
-sudo cat 0 0 * * 0 $INSTALLDIR/stop.sh >> /tmp/crondump
-sudo cat 0 * * * * $INSTALLDIR/restart.sh >> /tmp/crondump
-sudo cat 0 0 * * * $INSTALLDIR/backupday.sh >> /tmp/crondump
-crontab /tmp/crondump
-echo "Cron Done!"
-sleep 5
-clear
+#sudo cat @reboot $INSTALLDIR/start.sh >> /tmp/crondump
+#sudo cat 0 0 * * 0 $INSTALLDIR/stop.sh >> /tmp/crondump
+#sudo cat 0 * * * * $INSTALLDIR/restart.sh >> /tmp/crondump
+#sudo cat 0 0 * * * $INSTALLDIR/backupday.sh >> /tmp/crondump
+#crontab /tmp/crondump
+#echo "Cron Done!"
+#sleep 5
+#clear
 
 
 echo "@---------------------------------------------@"
 echo "@          Configuring Bukkit Server          @"
 echo "@---------------------------------------------@"
 
-dots
 
-# We should add some helpful info for the user in here; see cat /proc/meminfo -nix
-echo "Minimum RAM in Megabytes to allocate server:"
-read MINRAM # You need to sanitise this entry (make sure it is a number & in a suitable range) -nix
-MINRAM = "${MINRAM}M" # appends the M for megabytes onto the input (I HOPE!) -nix
-sed 's/minram_here/$MINRAM/g' minecraft_script  # or something like this to fill the minecraft_script with the correct stuff -nix
-
-echo "Maximum Ram in Megabytes to allocate server:"
-read MAXRAM # You need to sanitise this entry (make sure it is a number & in a suitable range) -nix
-MAXRAM = "${MAXRAM}M" # appends the M for megabytes onto the input -nix
-sed 's/maxram_here/$MAXRAM/g' minecraft_script  # or something like this to fill the minecraft_script with the correct stuff -nix
-
-# This is now redundant with init.d script (minecraft_script) -nix
-# sed -i 's/  java -server -Xms1024M -Xmx2250M -jar craftbukkit.jar/  java -server -Xms$ramM -Xmx$ram2M -jar craftbukkit.jar/g' /root/scripts/run.sh
-
-echo "Adding lots of alias."
-echo “alias startall='$INSTALLDIR/start.sh'” >> ~/.profile
 
 # I think the following mysql / php / httpd/apache should be an optional install -nix
 echo "@----------------------------------@"
