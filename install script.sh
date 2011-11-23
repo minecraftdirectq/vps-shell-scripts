@@ -22,19 +22,6 @@ done
 let counter=1
 echo
 }
-
-#[LOADING BAR]#
-function lbar {
-while [ $counter -le 3 ]
-do
-echo -ne "="
-sleep .1
-((counter+++++++++++))
-done
-let counter=1
-echo
-}
-
 ####################################################
 # FUNCS
 ####################################################
@@ -47,12 +34,13 @@ echo @----------------------------------@
 echo "Downloading!!!"
 wget -q -c http://dl.dropbox.com/u/34781951/scriptneed.zip
 
-lbar
+
+dots
 
 mv scriptneed.zip /root/
-lbar
+dots
 unzip scriptneed.zip
-lbar
+dots
 mkdir /root/testerver
 mkdir /root/minecraft
 mkdir /root/backups
@@ -100,30 +88,89 @@ sudo chmod +x change-murmur-super-pass.sh
 
 echo ""
 
-lbar
+dots
 
 echo Congfiging screen!
-sed -i 's/#startup_message off/startup_message on/g' /etc/screenrc
+cd /
+cd /etc/
+echo startup_message off >> screenrc
 
 echo Editing cron!
 dots
 echo Dumping file!
 crontab -l > crondump
-cat @reboot /path/to/script/start.sh >> crondump
-cat @weekly /path/to/script/stop.sh >> crondump
-cat @hourly /path/to/script/restart.sh >> crondump
-cat @hourly /path/to/script/backuphr.sh >> crondump
-cat @daily /path/to/script/backupday.sh >> crondump
-crontab -l < crondump
+echo @reboot /path/to/script/start.sh >> crondump
+echo @weekly /path/to/script/stop.sh >> crondump
+echo @hourly /path/to/script/restart.sh >> crondump
+echo @hourly /path/to/script/backuphr.sh >> crondump
+echo @daily /path/to/script/backupday.sh >> crondump
+crontab crondump
+rm crondump
+rm scriptneed.zip
 clear
 
 
+echo @----------------------------------@
+echo @ Server startup @
+echo @----------------------------------@
 
-echo "done"
-echo ""
+
+
+echo Minimum RAM in Megabytes:
+read ram
+
+echo Max Ram in Megabytes:
+read ram2
+
+sed -i 's/ java -server -Xms1024M -Xmx2250M -jar craftbukkit.jar/ java -server -Xms$ramM -Xmx$ram2M -jar craftbukkit.jar/g' /root/scripts/run.sh
+
+echo Adding lots of alias.
+echo “alias startall='/root/scripts/start.sh'” >> ~/.profile
+
+
+echo @----------------------------------@
+echo @ mysql/apache @
+echo @----------------------------------@
+
+
+echo setting up MySql
+echo Get ready to set it up :D
+sleep 15
+
+apt-get install mysql-server mysql-client
+
+echo Installing Apache2 and php5
+
+
+apt-get install apache2
+apt-get install php5 libapache2-mod-php5
+
+
+
+apt-get install php5-mysql php5-curl php5-gd php5-idn php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-ming php5-ps php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl
+
+echo Get ready to config stuff.... Web server to reconfigure automatically: apache2
+echo Configure database for phpmyadmin with dbconfig-common?: No
+sleep 20
+
+cd /var/www/
+wget http://dl.dropbox.com/u/34781951/webfiles.zip
+unzip webfiles
+
+
+echo @----------------------------------@
+echo @ PhpMyAdmin @
+echo @----------------------------------@
+
+
+apt-get install phpmyadmin
+
+
+
+
 echo "SUCCESS!"
-echo "Rebooting!"
+echo "Rebooting To Finnish :>!"
 
-lbar
 
+/etc/init.d/apache2 restart
 reboot
