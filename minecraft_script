@@ -1,0 +1,245 @@
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:   bukkit.jar
+# Required-Start: $local_fs $remote_fs
+# Required-Stop:  $local_fs $remote_fs
+# Should-Start:   $network
+# Should-Stop:    $network
+# Default-Start:  2 3 4 5
+# Default-Stop:   0 1 6
+# Short-Description:    bukkit.jar server
+# Description:    Starts the bukkit.jar server
+### END INIT INFO
+
+####################################################
+# Parameters
+####################################################
+
+# Installation directory
+INSTALLDIR = "/opt/minecraft"
+
+# Number of CPUs system has
+CPU_COUNT = 1
+
+# Minimum RAM for bukkit to use
+MINRAM = 512M
+
+# Maximum RAM for bukkit to use
+MAXRAM = 1024M
+
+# System user name for running bukkit server
+USERNAME = "mcuser"
+
+# How old (in days) backups will be cleaned from the system
+OLDDAYS = 7
+
+# Backup directory for bukkit server
+BACKUPDIR = "$INSTALLDIR/backup/"
+
+# Date stamp used for bukkit backups
+DATE = `date "+%Y.%m.%d-%H:%M"`
+
+# URL for updating bukkit
+BUKKIT_URL = http://ci.bukkit.org/job/dev-CraftBukkit/promotion/latest/Recommended/artifact/target/craftbukkit-0.0.1-SNAPSHOT.jar
+
+# Invocation for starting bukkit server
+INVOCATION = "java -Xms$MINRAM -Xmx$MAXRAM -XX:ParallelGCThreads=$CPU_COUNT -jar bukkit.jar nogui"
+
+# Used to check who the user is
+ME = `whoami`
+
+
+####################################################
+# Functions
+####################################################
+
+# Function to run all commands as the specified system user
+as_user() {
+  if [ $ME == $USERNAME ] ; then
+    bash -c "$1"
+  else
+    su $USERNAME -c "$1"
+  fi
+}
+
+mc_start() {
+  if ps ax | grep -v grep | grep -v -i SCREEN | grep bukkit.jar > /dev/null
+  then
+    echo "bukkit.jar is already running!"
+  else
+    echo "Starting bukkit.jar..."
+    as_user "cd $INSTALLDIR && screen -dmS bukkit.jar $INVOCATION"
+    sleep 7
+    if ps ax | grep -v grep | grep -v -i SCREEN | grep bukkit.jar > /dev/null
+    then
+      echo "bukkit.jar is now running."
+    else
+      echo "Error! Could not start bukkit.jar!"
+    fi
+  fi
+}
+
+mc_saveoff() {
+  if ps ax | grep -v grep | grep -v -i SCREEN | grep bukkit.jar > /dev/null
+  then
+    echo "bukkit.jar is running... suspending saves"
+    as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"say Starting server backup...\"\015'"
+    as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"save-off\"\015'"
+    as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"save-all\"\015'"
+    sync
+    sleep 10
+  else
+    echo "bukkit.jar is not running. Not suspending saves."
+  fi
+}
+
+mc_saveon() {
+  if ps ax | grep -v grep | grep -v -i SCREEN | grep bukkit.jar > /dev/null
+  then
+    echo "bukkit.jar is running... re-enabling saves"
+    as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"save-on\"\015'"
+    as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"say End of server backup...\"\015'"
+  else
+    echo "bukkit.jar is not running. Not resuming saves."
+  fi
+}
+
+mc_stop() {
+  if ps ax | grep -v grep | grep -v -i SCREEN | grep bukkit.jar > /dev/null
+  then
+    echo "Stopping bukkit.jar"
+    as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"say Server shutting down imminently...\"\015'"
+    as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"say Saving world...\"\015'"
+    as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"save-all\"\015'"
+    as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"stop\"\015'"
+  else
+    echo "bukkit.jar was not running."
+  fi
+  if ps ax | grep -v grep | grep -v -i SCREEN | grep bukkit.jar > /dev/null
+  then
+    echo "Error! bukkit.jar could not be stopped."
+  else
+    echo "bukkit.jar is stopped."
+  fi
+}
+
+mc_update() {
+  if ps ax | grep -v grep | grep -v -i SCREEN | grep bukkit.jar > /dev/null
+  then
+    echo "bukkit.jar is running! Will not start update."
+  else
+    as_user "cd $INSTALLDIR && wget -q -O $INSTALLDIR/bukkit.jar.update $BUKKIT_URL"
+    if [ -f $INSTALLDIR/bukkit.jar.update ]
+    then
+      if `diff $INSTALLDIR/bukkit.jar $INSTALLDIR/bukkit.jar.update >/dev/null`
+      then
+        echo "You are already running the latest version of bukkit.jar."
+      else
+        as_user "mv $INSTALLDIR/bukkit.jar.update $INSTALLDIR/bukkit.jar"
+        echo "bukkit.jar successfully updated."
+      fi
+    else
+      echo "bukkit.jar update could not be downloaded."
+    fi
+  fi
+}
+
+mc_backup() {
+   echo "Backing up bukkit.jar server..."
+   echo "Checking for backup folder..."
+   if [ -d $BACKUPDIR ]
+   then
+     echo "Found $BACKUPDIR"
+   else
+     echo "Could not find $BACKUPDIR"
+     echo "Creating $BACKUPDIR..."
+     as_user "mkdir $BACKUPDIR"
+     if [ -d $BACKUPDIR ]
+     then
+       echo "Successfully created $BACKUPDIR"
+     else
+       echo "Could not create $BACKUPDIR"
+       exit 0
+     fi
+   fi
+   if [ -d $BACKUPDIR/backup_$DATE.tar.gz ]
+   then
+     for i in 1 2 3 4 5 6
+     do
+       if [ -d $BACKUPDIR/backup_$DATE-$i.tar.gz ]
+       then
+         continue
+       else
+         as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"say Backing up world...\"\015'"
+         as_user "tar -zcf $BACKUPDIR/backup_$DATE-$i.tar.gz $INSTALLDIR"
+         echo "Backed up world"
+         as_user "find $BACKUPDIR/* -mtime +$OLDDAYS -exec rm {} \;"
+         break
+       fi
+     done
+   else
+     as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"say Backing up world file...\"\015'"
+     as_user "tar -zcf $BACKUPDIR/backup_$DATE.tar.gz $INSTALLDIR"
+     echo "Backed up world"
+     as_user "find $BACKUPDIR/* -mtime +$OLDDAYS -exec rm {} \;"
+   fi
+   echo "Backup complete"
+}
+
+mc_command() {
+  if [ "$1" ]
+  then
+    command="$1";
+    if ps ax | grep -v grep | grep -v -i SCREEN | grep bukkit.jar > /dev/null
+    then
+      echo "bukkit.jar is running... executing command"
+      as_user "screen -p 0 -S bukkit.jar -X eval 'stuff \"$command\"\015'"
+    fi
+    else
+      echo "Must specify server command"
+  fi
+}
+
+#Start-Stop here
+case "$1" in
+  start)
+    mc_start
+    ;;
+  stop)
+    mc_stop
+    ;;
+  restart)
+    mc_stop
+    mc_start
+    ;;
+  update)
+    mc_stop
+    mc_backup
+    mc_update
+    mc_start
+    ;;
+  backup)
+    mc_saveoff
+    mc_backup
+    mc_saveon
+    ;;
+  status)
+    if ps ax | grep -v grep | grep -v -i SCREEN | grep bukkit.jar > /dev/null
+    then
+      echo "bukkit.jar is running."
+    else
+      echo "bukkit.jar is not running."
+    fi
+    ;;
+  command)
+    mc_command "$2"
+    ;;
+
+  *)
+  echo "Usage: /etc/init.d/bukkit.jar {start|stop|update|backup|status|restart|command \"server command\"}"
+  exit 1
+  ;;
+esac
+
+exit 0
