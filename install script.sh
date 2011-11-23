@@ -47,8 +47,6 @@ sudo su
 
 echo "prepare for lots of text, click "y" if prompted!"
 
-sudo apt-get install bash
-
 sudo apt-get install sun-java6-jre sun-java6-plugin
 apt-get install apache2
 sudo update-java-alternatives -s java-6-sun
@@ -84,10 +82,6 @@ echo ""
 echo "------------------------------------"
 echo "@       Full install done!!!       @"
 echo "------------------------------------"
-echo ""
-echo "------------------------------------"
-echo "@       CONFIG TIME[woot?]!!!      @"
-echo "------------------------------------"
 
 dots
 cd /root/scipts/
@@ -99,12 +93,15 @@ sudo chmod +x backuphr.sh
 sudo chmod +x backupday.sh
 sudo chmod +x change-murmur-super-pass.sh
 
-echo ""
-
 lbar
 
 echo Congfiging screen!
 sed -i 's/#startup_message off/startup_message on/g' /etc/screenrc
+
+
+echo @----------------------------------@
+echo @            cron time :>          @
+echo @----------------------------------@
 
 echo Editing cron!
 dots
@@ -118,6 +115,13 @@ cat 0 0 * * * /path/to/script/backupday.sh >> crondump
 crontab crondump
 clear
 
+
+echo @----------------------------------@
+echo @          Server startup          @
+echo @----------------------------------@
+
+dots
+
 echo Minimum RAM in Megabytes:
 read ram
 
@@ -129,6 +133,12 @@ sed -i 's/  java -server -Xms1024M -Xmx2250M -jar craftbukkit.jar/  java -server
 echo Adding lots of alias.
 echo “alias startall='/root/scripts/start.sh'” >> ~/.profile
 
+
+echo @----------------------------------@
+echo @           mysql/apache           @
+echo @----------------------------------@
+
+
 echo setting up MySql
 echo Get ready to set it up :D
 sleep 15
@@ -136,6 +146,8 @@ sleep 15
 apt-get install mysql-server mysql-client
 
 echo Installing Apache2 and php5
+
+
 apt-get install apache2
 apt-get install php5 libapache2-mod-php5
 
@@ -147,16 +159,21 @@ echo Get ready to config stuff.... Web server to reconfigure automatically: <-- 
 echo Configure database for phpmyadmin with dbconfig-common? <-- No
 sleep 20
 
+
+echo @----------------------------------@
+echo @             PhpMyAdmin           @
+echo @----------------------------------@
+
+
 apt-get install phpmyadmin
 
 cd /var/www/
 wget -q -c https://github.com/downloads/minecraftdirectq/vps-shell-scripts/webfiles.zip
 
-echo "done"
-echo ""
-echo "SUCCESS!"
-echo "Rebooting!"
 
-lbar
+echo "SUCCESS!"
+echo "Rebooting To Finnish :>!"
+
+dots
 
 reboot
