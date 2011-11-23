@@ -53,7 +53,6 @@ dots
 
 echo "prepare for lots of text, click "y" if prompted!"
 
-sudo cat deb http://archive.canonical.com/ lucid partner >> /etc/apt/sources.list
 sudo apt-get update
 sudo apt-get install sun-java6-jre sun-java6-plugin
 sudo update-java-alternatives -s java-6-sun
