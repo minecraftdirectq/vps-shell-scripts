@@ -2,7 +2,7 @@
 echo ""
 echo "@-------------------------------------------@"
 echo "@     Gravypod's Shell Server settup        @"
-echo "@     Credits                               @" 
+echo "@     Credits                               @"
 echo "@     -Khobbits                             @"
 echo "@     -Darklust                             @"
 echo "@     -Tyrant                               @"
