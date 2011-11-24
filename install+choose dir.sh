@@ -14,9 +14,9 @@ echo "@-------------------------------------------@"
 ####################################################
 # Default parameters
 ####################################################
-D_INSTALLDIR = /opt/minecraft/
-WP_URL = http://dl.dropbox.com/u/34781951/www.zip
-SCRIPTS_URL = http://dl.dropbox.com/u/34781951/scriptneed.zip
+D_INSTALLDIR=/opt/minecraft
+WP_URL=http://dl.dropbox.com/u/34781951/www.zip
+SCRIPTS_URL=http://dl.dropbox.com/u/34781951/scriptneed.zip
 
 
 ####################################################
@@ -90,20 +90,54 @@ if [ ! -d "$INSTALLDIR" ]; then
 fi
 sed 's/install_dir_here/$INSTALLDIR/g' minecraft_script  # TODO: or something like this to fill the minecraft_script with the correct direcory -nix
 
-# Create a temporary working directory
-mkdir $INSTALLDIR/temp
-TEMPDIR = "$INSTALLDIR/temp"
+# Create directories
+mkdir $INSTALLDIR/temp $INSTALLDIR/backups
+TEMPDIR="$INSTALLDIR/temp"
 
-# We should add some helpful info for the user in here; see cat /proc/meminfo -nix
-echo "Minimum RAM in Megabytes to allocate server:"
-read MINRAM # TODO: You need to sanitise this entry (make sure it is a number & in a suitable range) -nix
-MINRAM = "${MINRAM}M" # appends the M for megabytes onto the input (I HOPE!) -nix
-sed 's/minram_here/$MINRAM/g' $INSTALLDIR/minecraft_script  # TODO: or something like this to fill the minecraft_script with the correct stuff -nix
+# Copy a working copy of the init script into the temp dir, ready for the setup script to write appropriate values to the variables -nix
+cp minecraft_script $TEMPDIR/minecraft
 
-echo "Maximum Ram in Megabytes to allocate server:"
-read MAXRAM # TODO: You need to sanitise this entry (make sure it is a number & in a suitable range) -nix
-MAXRAM = "${MAXRAM}M" # appends the M for megabytes onto the input -nix
-sed 's/maxram_here/$MAXRAM/g' $INSTALLDIR/minecraft_script  # TODO: or something like this to fill the minecraft_script with the correct stuff -nix
+# Request the minimum RAM to allocate the server
+echo "Minimum RAM in Megabytes to allocate server (512 - 4096):"
+read MINRAM
+# Sanitise the entry. Checks it is a number, and within a suitable range.
+while true; do
+   if [[ "$MINRAM" =~ ^[0-9]+$ ]]; then
+     if [ $MINRAM -lt 512 -o $MINRAM -gt 4096 ]; then
+       echo "Out of range."
+     else
+       break
+     fi
+   else
+     echo "Please only enter the NUMBER of Megabytes."
+   fi
+   echo "Minimum RAM in Megabytes to allocate server (512 - 4096):"
+   read MINRAM
+done
+
+#Request the maximum RAM to allocate the server
+echo "Maximum RAM in Megabytes to allocate server ($MINRAM - 8192):"
+read MAXRAM 
+# Sanitise the entry. Checks it is a number, and within a suitable range.
+while true; do
+   if [[ "$MAXRAM" =~ ^[0-9]+$ ]]; then
+     if [ $MAXRAM -lt $MINRAM -o $MAXRAM -gt 8192 ]; then
+       echo "Out of range."
+     else
+       break
+     fi
+   else
+     echo "Please only enter the NUMBER of Megabytes."
+   fi
+   echo "Maximum RAM in Megabytes to allocate server ($MINRAM - 8192):"
+   read MAXRAM
+done
+
+# Append 'M' on to the end of the RAM variables and insert them into the init script for the java invocation
+MINRAM="${MINRAM}M"
+MAXRAM="${MAXRAM}M"
+sed 's/minram_here/'$MINRAM'/' $TEMPDIR/minecraft
+sed 's/maxram_here/'$MAXRAM'/' $TEMPDIR/minecraft
 
 # This is now redundant with init.d script (minecraft_script) -nix
 # sed -i 's/  java -server -Xms1024M -Xmx2250M -jar craftbukkit.jar/  java -server -Xms$ramM -Xmx$ram2M -jar craftbukkit.jar/g' /root/scripts/run.sh
@@ -151,12 +185,6 @@ lbar
 unzip -d $INSTALLDIR/ scriptneed.zip
 lbar
 
-# TODO: should be checks before this to make sure they dont already exist
-mkdir $INSTALLDIR/testerver
-mkdir $INSTALLDIR/minecraft
-mkdir $INSTALLDIR/backups
-mkdir $INSTALLDIR/logs
-
 clear
 
 
@@ -178,8 +206,9 @@ chmod +x change-murmur-super-pass.sh
 
 lbar
 
-echo "Congfiging screen!"
-sed -i 's/#startup_message off/startup_message on/g' /etc/screenrc
+#This is redundant, the screen is created with the init script -nix
+#echo "Congfiging screen!"
+#sed -i 's/#startup_message off/startup_message on/g' /etc/screenrc
 
 
 echo "@----------------------------------@"
@@ -218,7 +247,7 @@ echo "@----------------------------------@"
 
 echo "setting up MySql"
 echo "Get ready to set it up :D"
-sleep 15
+pause "Press any key to continue..."
 
 apt-get install mysql-server mysql-client
 
