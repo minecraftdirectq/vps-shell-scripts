@@ -10,6 +10,8 @@
 # Default-Stop:   0 1 6
 # Short-Description:    craftbukkit.jar server
 # Description:    Starts the craftbukkit.jar server
+# Tyr, what did i tell you! James can you put back the "core's to run on". I like that tweek it will help us cus
+# we can than offer more cores. Tyr stop going and telling people to do things that i said i liked?
 ### END INIT INFO
 
 # This init.d script is based off the one which can be found at 
