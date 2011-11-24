@@ -21,22 +21,22 @@
 ####################################################
 
 # Installation directory
-INSTALLDIR = "/opt/minecraft"
+INSTALLDIR = installdir_here
 
 # Number of CPUs system has
-CPU_COUNT = 1
+CPU_COUNT = cpucores_here
 
 # Minimum RAM for craftbukkit to use
-MINRAM = 512M
+MINRAM = minram_here
 
 # Maximum RAM for craftbukkit to use
-MAXRAM = 1024M
+MAXRAM = maxram_here
 
 # System user name for running craftbukkit server
-USERNAME = "mcuser"
+USERNAME = user_here
 
 # How old (in days) backups will be cleaned from the system
-OLDDAYS = 7
+OLDDAYS = olddays_here
 
 # Backup directory for craftbukkit server
 BACKUPDIR = "$INSTALLDIR/backup/"
