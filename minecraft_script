@@ -35,8 +35,9 @@ MAXRAM = maxram_here
 # System user name for running craftbukkit server
 USERNAME = user_here
 
+# Removed -nix
 # How old (in days) backups will be cleaned from the system
-OLDDAYS = olddays_here
+#OLDDAYS = olddays_here
 
 # Backup directory for craftbukkit server
 BACKUPDIR = "$INSTALLDIR/backup/"
@@ -47,8 +48,11 @@ DATE = `date "+%Y.%m.%d-%H:%M"`
 # URL for updating craftbukkit
 BUKKIT_URL = http://ci.craftbukkit.org/job/dev-CraftBukkit/promotion/latest/Recommended/artifact/target/craftbukkit-0.0.1-SNAPSHOT.jar
 
+# Old invocation including CPU count
+#INVOCATION = "java -Xms$MINRAM -Xmx$MAXRAM -XX:ParallelGCThreads=$CPU_COUNT -jar craftbukkit.jar nogui"
+
 # Invocation for starting craftbukkit server
-INVOCATION = "java -Xms$MINRAM -Xmx$MAXRAM -XX:ParallelGCThreads=$CPU_COUNT -jar craftbukkit.jar nogui"
+INVOCATION = "java -Xms$MINRAM -Xmx$MAXRAM  -jar craftbukkit.jar nogui"
 
 # Used to check who the user is
 ME = `whoami`
