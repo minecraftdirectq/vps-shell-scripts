@@ -141,37 +141,44 @@ echo "Number of CPU cores to allocate server (1 - 8):"
 read CPUCORES 
 # Sanitise the entry. Checks it is a number, and within a suitable range.
 # Why is this needed? let minecraft do it automatically.  Plus, some servers have 12 cores, and some have dual processors.  Someone could want 24 cores! Please remove this. -ty
-while true; do
-   if [[ "$CPUCORES" =~ ^[0-9]+$ ]]; then
-     if [ $MAXRAM -lt 1 -o $MAXRAM -gt 8 ]; then
-       echo "Out of range."
-     else
-       break
-     fi
-   else
-     echo "Please only enter the NUMBER of cores."
-   fi
-   echo "Number of CPU cores to allocate server (1 - 8)::"
-   read CPUCORES
-done
+# Removed :) -nix
+#while true; do
+#   if [[ "$CPUCORES" =~ ^[0-9]+$ ]]; then
+#     if [ $MAXRAM -lt 1 -o $MAXRAM -gt 8 ]; then
+#       echo "Out of range."
+#     else
+#       break
+#     fi
+#   else
+#     echo "Please only enter the NUMBER of cores."
+#   fi
+#   echo "Number of CPU cores to allocate server (1 - 8)::"
+#   read CPUCORES
+#done
 
 # Request name of new user to run the server.
 # I want them to be able to run it has a old or new user, think you could do that? -ty
+# Yep, I changed the check for an existing user, so now if it detects it as an existing user, it confirms whether that is correct -nix
 echo "Name of new user to run bukkit server:"
 read USERNAME
 while true; do
   if id $USERNAME > /dev/null 2>&1; then
     echo "That user already exists."
-    echo "Name of NEW user to run bukkit server:"
+    read -p "Use existing user, $USERNAME ? (y/n)"
+    if [ $REPLY = "y" ]; then
+	   break
+    fi
+    echo "Name of new user to run bukkit server:"
     read USERNAME
   else
     echo "Adding user $USERNAME as a system user to run bukkit."
+    # Add the user
+    useradd $USERNAME
     break
   fi
 done
 
-# Add the user
-useradd $USERNAME
+
 
 # Request the number of days old backup files will be deleted
 echo "How many days should backups be stored (i.e. backups will be deleted after X days):"
