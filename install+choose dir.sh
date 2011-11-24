@@ -81,7 +81,7 @@ read INSTALLDIR
 
 # If INSTALLDIR is empty set  to default.
 if [ -z "$INSTALLDIR" ]; then
-  INSTALLDIR = D_INSTALLDIR
+  INSTALLDIR=$D_INSTALLDIR
 fi
 
 # Check if INSTALLDIR exists, if not then create it
