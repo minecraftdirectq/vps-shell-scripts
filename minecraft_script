@@ -26,7 +26,7 @@
 INSTALLDIR = installdir_here
 
 # Number of CPUs system has
-CPU_COUNT = cpucores_here
+#CPU_COUNT = cpucores_here
 
 # Minimum RAM for craftbukkit to use
 MINRAM = minram_here
@@ -37,9 +37,9 @@ MAXRAM = maxram_here
 # System user name for running craftbukkit server
 USERNAME = user_here
 
-# Removed -nix
+
 # How old (in days) backups will be cleaned from the system
-#OLDDAYS = olddays_here
+OLDDAYS = olddays_here
 
 # Backup directory for craftbukkit server
 BACKUPDIR = "$INSTALLDIR/backup/"
