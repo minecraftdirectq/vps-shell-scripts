@@ -124,18 +124,20 @@ echo "Preparing to install packages;"
 echo "you may be required to press 'y' if prompted"
 pause "Press any key to continue..."
 # TODO: this next line is ugly, we shouldnt just crack in a new repo. A better solution would be to check the OS version and add the appropriate package -nix
-sudo cat deb http://archive.canonical.com/ lucid partner >> /etc/apt/sources.list
-sudo apt-get update
-sudo apt-get install sun-java6-jre sun-java6-plugin
+# It's actually not a bad idea to put in a new repo, and this way java will update with apt-get upgrade later on. -ty
+cat deb http://archive.canonical.com/ lucid partner >> /etc/apt/sources.list
+apt-get update
+apt-get install sun-java6-jre sun-java6-plugin
 # im not sure if this is needed, it is done by default
-sudo update-java-alternatives -s java-6-sun
-sudo apt-get install screen
-sudo apt-get install rdiff
-sudo apt-get install rdiff-backup
-sudo apt-get install zip
-sudo apt-get install unzip
-sudo gnome-terminal -x sudo update-java-alternatives -s java-6-sun
-sudo apt-get update
+# It's not needed, I just haven't removed it yet, doing it now -Ty
+# update-java-alternatives -s java-6-sun
+
+# I compressed all these into one command to make it faster, so it doesn't have to do five dependacy checks, etc. -ty
+apt-get install screen rdiff rdiff-backup zip unzip 
+
+# This isn't needed either -ty
+# gnome-terminal -x update-java-alternatives -s java-6-sun
+apt-get update
 
 
 echo "@----------------------------------@"
@@ -150,10 +152,10 @@ unzip -d $INSTALLDIR/ scriptneed.zip
 lbar
 
 # TODO: should be checks before this to make sure they dont already exist
-sudo mkdir $INSTALLDIR/testerver
-sudo mkdir $INSTALLDIR/minecraft
-sudo mkdir $INSTALLDIR/backups
-sudo mkdir $INSTALLDIR/logs
+mkdir $INSTALLDIR/testerver
+mkdir $INSTALLDIR/minecraft
+mkdir $INSTALLDIR/backups
+mkdir $INSTALLDIR/logs
 
 clear
 
@@ -166,18 +168,18 @@ dots
 
 # probably better practise to use absolute references, just in case.. -nix
 cd $INSTALLDIR/scipts/
-sudo chmod +x start.sh
-sudo chmod +x run.sh
-sudo chmod +x stop.sh
-sudo chmod +x restart.sh
-sudo chmod +x backuphr.sh
-sudo chmod +x backupday.sh
-sudo chmod +x change-murmur-super-pass.sh
+chmod +x start.sh
+chmod +x run.sh
+chmod +x stop.sh
+chmod +x restart.sh
+chmod +x backuphr.sh
+chmod +x backupday.sh
+chmod +x change-murmur-super-pass.sh
 
 lbar
 
 echo "Congfiging screen!"
-sudo sed -i 's/#startup_message off/startup_message on/g' /etc/screenrc
+sed -i 's/#startup_message off/startup_message on/g' /etc/screenrc
 
 
 echo "@----------------------------------@"
@@ -192,10 +194,10 @@ echo "@----------------------------------@"
 #dots
 
 # I think that the server management should be handled by a single script installed as a service, so it can be managed simply via "service bukkit start/stop/restart/update/backup" this will also make unning on startup cleaner. -nix
-#sudo cat @reboot $INSTALLDIR/start.sh >> /tmp/crondump
-#sudo cat 0 0 * * 0 $INSTALLDIR/stop.sh >> /tmp/crondump
-#sudo cat 0 * * * * $INSTALLDIR/restart.sh >> /tmp/crondump
-#sudo cat 0 0 * * * $INSTALLDIR/backupday.sh >> /tmp/crondump
+#cat @reboot $INSTALLDIR/start.sh >> /tmp/crondump
+#cat 0 0 * * 0 $INSTALLDIR/stop.sh >> /tmp/crondump
+#cat 0 * * * * $INSTALLDIR/restart.sh >> /tmp/crondump
+#cat 0 0 * * * $INSTALLDIR/backupday.sh >> /tmp/crondump
 #crontab /tmp/crondump
 #echo "Cron Done!"
 #sleep 5
@@ -223,12 +225,12 @@ apt-get install mysql-server mysql-client
 echo "Installing Apache2 and php5"
 
 
-sudo apt-get install apache2
-sudo apt-get install php5 libapache2-mod-php5
+apt-get install apache2
+apt-get install php5 libapache2-mod-php5
 
 /etc/init.d/apache2 restart
 
-sudo apt-get install php5-mysql php5-curl php5-gd php5-idn php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-ming php5-ps php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl
+apt-get install php5-mysql php5-curl php5-gd php5-idn php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-ming php5-ps php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl
 
 echo "Get ready to config stuff.... Web server to reconfigure automatically: <-- apache2"
 echo "Configure database for phpmyadmin with dbconfig-common? <-- No"
@@ -240,7 +242,7 @@ echo @             PhpMyAdmin           @
 echo @----------------------------------@
 
 
-sudo apt-get install phpmyadmin
+apt-get install phpmyadmin
 
 wget -q -c -O $TEMPDIR/WP.zip $WP_URL
 unzip -d /var/www/ $TEMPDIR/WP.zip 
@@ -253,5 +255,6 @@ echo "Rebooting To Finnish :>!"
 
 dots
 
-reboot
+shutdown -r now
 # ? shutdown -r now -nix
+# Actually a much better command nix.. good thinking! -ty
