@@ -88,7 +88,6 @@ fi
 if [ ! -d "$INSTALLDIR" ]; then
   mkdir $INSTALLDIR
 fi
-sed 's/install_dir_here/$INSTALLDIR/g' minecraft_script  # TODO: or something like this to fill the minecraft_script with the correct direcory -nix
 
 # Create directories
 mkdir $INSTALLDIR/temp $INSTALLDIR/backups
@@ -133,11 +132,35 @@ while true; do
    read MAXRAM
 done
 
-# Append 'M' on to the end of the RAM variables and insert them into the init script for the java invocation
+# Append 'M' on to the end of the RAM variables
 MINRAM="${MINRAM}M"
 MAXRAM="${MAXRAM}M"
+
+# Request the number of cores for the server to use
+echo "Number of CPU cores to allocate server (1 - 8):"
+read CPUCORES 
+# Sanitise the entry. Checks it is a number, and within a suitable range.
+while true; do
+   if [[ "$CPUCORES" =~ ^[0-9]+$ ]]; then
+     if [ $MAXRAM -lt 1 -o $MAXRAM -gt 8 ]; then
+       echo "Out of range."
+     else
+       break
+     fi
+   else
+     echo "Please only enter the NUMBER of cores."
+   fi
+   echo "Number of CPU cores to allocate server (1 - 8)::"
+   read CPUCORES
+done
+
+
+# Write all the set variables to the init file
+sed 's/installdir_here/'$INSTALLDIR'/' $TEMPDIR/minecraft
 sed 's/minram_here/'$MINRAM'/' $TEMPDIR/minecraft
 sed 's/maxram_here/'$MAXRAM'/' $TEMPDIR/minecraft
+sed 's/cpucores_here/'$CPUCORES'/' $TEMPDIR/minecraft
+
 
 # This is now redundant with init.d script (minecraft_script) -nix
 # sed -i 's/  java -server -Xms1024M -Xmx2250M -jar craftbukkit.jar/  java -server -Xms$ramM -Xmx$ram2M -jar craftbukkit.jar/g' /root/scripts/run.sh
@@ -145,7 +168,7 @@ sed 's/maxram_here/'$MAXRAM'/' $TEMPDIR/minecraft
 #echo “alias startall='$INSTALLDIR/start.sh'” >> ~/.profile
 
 # Move the minecraft_script into the init.d and install it as a service -nix
-cp $INSTALLDIR/minecraft_script /etc/init.d/minecraft
+cp $TEMPDIR/minecraft /etc/init.d/minecraft
 chmod a+x /etc/init.d/minecraft
 update-rc.d minecraft defaults
 
