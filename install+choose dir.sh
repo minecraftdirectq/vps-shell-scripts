@@ -140,6 +140,7 @@ MAXRAM="${MAXRAM}M"
 echo "Number of CPU cores to allocate server (1 - 8):"
 read CPUCORES 
 # Sanitise the entry. Checks it is a number, and within a suitable range.
+# Why is this needed? let minecraft do it automatically.  Plus, some servers have 12 cores, and some have dual processors.  Someone could want 24 cores! Please remove this. -ty
 while true; do
    if [[ "$CPUCORES" =~ ^[0-9]+$ ]]; then
      if [ $MAXRAM -lt 1 -o $MAXRAM -gt 8 ]; then
@@ -155,6 +156,7 @@ while true; do
 done
 
 # Request name of new user to run the server.
+# I want them to be able to run it has a old or new user, think you could do that? -ty
 echo "Name of new user to run bukkit server:"
 read USERNAME
 while true; do
@@ -271,9 +273,9 @@ lbar
 #sed -i 's/#startup_message off/startup_message on/g' /etc/screenrc
 
 
-echo "@----------------------------------@"
-echo "@            cron time :>          @"
-echo "@----------------------------------@"
+#echo "@----------------------------------@"
+#echo "@            cron time :>          @"
+#echo "@----------------------------------@"
 
 #echo "Editing cron!"
 #dots
