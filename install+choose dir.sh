@@ -15,6 +15,7 @@ echo "@-------------------------------------------@"
 # Default parameters
 ####################################################
 D_INSTALLDIR=/opt/minecraft
+D_MINRAM=512
 WP_URL=http://dl.dropbox.com/u/34781951/www.zip
 SCRIPTS_URL=http://dl.dropbox.com/u/34781951/scriptneed.zip
 
@@ -26,31 +27,31 @@ counter=1
 
 # Dots loading 
 function dots {
-while [ $counter -le 3 ]
-do
-echo -ne "."
-sleep .1
-((counter++))
-done
-let counter=1
-echo
+  while [ $counter -le 3 ]
+  do
+    echo -ne "."
+    sleep .1
+    ((counter++))
+  done
+  let counter=1
+  echo
 }
 
 # Loading bar
 function lbar {
-while [ $counter -le 3 ]
-do
-echo -ne "="
-sleep .1
-((counter+++++++++++))
-done
-let counter=1
-echo
+  while [ $counter -le 3 ]
+  do
+    echo -ne "="
+    sleep .1
+    ((counter+++++++++++))
+  done
+  let counter=1
+  echo
 }
 
 # Pause function
 function pause() {
-   read -p "$*"
+ read -p "$*"
 }
 
 ####################################################
@@ -79,7 +80,7 @@ echo "directory path (/path/to/directory) for install:"
 echo "(leave blank, and hit return to accept default)"
 read INSTALLDIR
 
-# If INSTALLDIR is empty set  to default.
+# If INSTALLDIR is empty set to default.
 if [ -z "$INSTALLDIR" ]; then
   INSTALLDIR=$D_INSTALLDIR
 fi
@@ -97,21 +98,35 @@ TEMPDIR="$INSTALLDIR/temp"
 cp minecraft_script $TEMPDIR/minecraft
 
 # Request the minimum RAM to allocate the server
-echo "Minimum RAM in Megabytes to allocate server (512 - 4096):"
-read MINRAM
 # Sanitise the entry. Checks it is a number, and within a suitable range.
 while true; do
-   if [[ "$MINRAM" =~ ^[0-9]+$ ]]; then
-     if (( "$MINRAM" < 512 || "$MINRAM" > 4096 )); then
-       echo "Out of range."
-     else
+  yesno=""
+  echo "Minimum RAM in Megabytes to allocate server (512 - 4096):"
+  read MINRAM
+  while true; do
+     if [ -z "$MINRAM ]; then
+       MINRAM=$D_MINRAM
        break
      fi
-   else
-     echo "Please only enter the NUMBER of Megabytes."
-   fi
-   echo "Minimum RAM in Megabytes to allocate server (512 - 4096):"
-   read MINRAM
+     if [[ "$MINRAM" =~ ^[0-9]+$ ]]; then
+       if (( "$MINRAM" < 512 || "$MINRAM" > 4096 )); then
+         echo "Out of range."
+       else
+         break
+       fi
+     else
+       echo "Please only enter the NUMBER of Megabytes."
+     fi
+     echo "Minimum RAM in Megabytes to allocate server (512 - 4096):"
+     read MINRAM
+  done
+  while [[ "$yesno" != [yYnN] ]]; do
+    echo "Do you want to set $MINRAM minimum RAM? (y/n)"
+    read yesno
+  done
+  if [[ "$yesno" == [yY] ]]; then
+    break
+  fi
 done
 
 #Request the maximum RAM to allocate the server
@@ -178,8 +193,6 @@ while true; do
     break
   fi
 done
-
-
 
 # Request the number of days old backup files will be deleted
 echo "How many days should backups be stored (i.e. backups will be deleted after X days):"
