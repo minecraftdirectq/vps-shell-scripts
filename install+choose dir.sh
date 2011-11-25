@@ -136,9 +136,10 @@ done
 MINRAM="${MINRAM}M"
 MAXRAM="${MAXRAM}M"
 
+# This has been removed in favor of using UseParallelGC to allow the Java to choose how many cores/threads it uses for GC -nix
 # Request the number of cores for the server to use
-echo "Number of CPU cores to allocate server (1 - 8):"
-read CPUCORES 
+#echo "Number of CPU cores to allocate server (1 - 8):"
+#read CPUCORES 
 # Sanitise the entry. Checks it is a number, and within a suitable range.
 # Why is this needed? let minecraft do it automatically.  Plus, some servers have 12 cores, and some have dual processors.  Someone could want 24 cores! Please remove this. -ty
 # Removed :) -nix
