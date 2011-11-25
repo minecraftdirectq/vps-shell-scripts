@@ -102,7 +102,7 @@ read MINRAM
 # Sanitise the entry. Checks it is a number, and within a suitable range.
 while true; do
    if [[ "$MINRAM" =~ ^[0-9]+$ ]]; then
-     if [ $MINRAM -lt 512 -o $MINRAM -gt 4096 ]; then
+     if (( "$MINRAM" < 512 || "$MINRAM" > 4096 )); then
        echo "Out of range."
      else
        break
@@ -120,7 +120,7 @@ read MAXRAM
 # Sanitise the entry. Checks it is a number, and within a suitable range.
 while true; do
    if [[ "$MAXRAM" =~ ^[0-9]+$ ]]; then
-     if [ $MAXRAM -lt $MINRAM -o $MAXRAM -gt 8192 ]; then
+     if (( "$MAXRAM" < "$MINRAM" || "$MAXRAM" > 8192 )); then
        echo "Out of range."
      else
        break
@@ -145,7 +145,7 @@ MAXRAM="${MAXRAM}M"
 # Removed :) -nix
 #while true; do
 #   if [[ "$CPUCORES" =~ ^[0-9]+$ ]]; then
-#     if [ $MAXRAM -lt 1 -o $MAXRAM -gt 8 ]; then
+#     if (( "$CPUCORES" < 1 || "$CPUCORES" > 8 )); then
 #       echo "Out of range."
 #     else
 #       break
@@ -187,7 +187,7 @@ read DAYSOLD
 # Sanitise the entry. Checks it is a number, and within a suitable range.
 while true; do
    if [[ "$DAYSOLD" =~ ^[0-9]+$ ]]; then
-     if [ $DAYSOLD -lt 1 -o $DAYSOLD -gt 30 ]; then
+     if (( "$DAYSOLD" < 1 || "$DAYSOLD" > 30 )); then
        echo "Out of range (1 - 30)."
      else
        break
@@ -204,7 +204,7 @@ done
 sed 's/installdir_here/'$INSTALLDIR'/' $TEMPDIR/minecraft
 sed 's/minram_here/'$MINRAM'/' $TEMPDIR/minecraft
 sed 's/maxram_here/'$MAXRAM'/' $TEMPDIR/minecraft
-sed 's/cpucores_here/'$CPUCORES'/' $TEMPDIR/minecraft
+#sed 's/cpucores_here/'$CPUCORES'/' $TEMPDIR/minecraft
 sed 's/user_here/'$USERNAME'/' $TEMPDIR/minecraft
 sed 's/olddays_here/'$DAYSOLD'/' $TEMPDIR/minecraft
 
@@ -265,14 +265,15 @@ echo "@-----------------------------------@"
 dots
 
 # probably better practise to use absolute references, just in case.. -nix
-cd $INSTALLDIR/scipts/
-chmod +x start.sh
-chmod +x run.sh
-chmod +x stop.sh
-chmod +x restart.sh
-chmod +x backuphr.sh
-chmod +x backupday.sh
-chmod +x change-murmur-super-pass.sh
+# These are redundant with the init script -nix
+#cd $INSTALLDIR/scipts/
+#chmod +x start.sh
+#chmod +x run.sh
+#chmod +x stop.sh
+#chmod +x restart.sh
+#chmod +x backuphr.sh
+#chmod +x backupday.sh
+#chmod +x change-murmur-super-pass.sh
 
 lbar
 
