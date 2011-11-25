@@ -160,6 +160,10 @@ echo @----------------------------------@
 apt-get install phpmyadmin
 
 ln -s /var/www/
+
+wget http://ci.bukkit.org/job/dev-CraftBukkit/1502/artifact/target/craftbukkit-1.0.0-SNAPSHOT.jar craftbukkit.jar
+mv /root/minecraft
+
 echo "@----------------------@"
 echo "Rebooting To Finnish :>!"
 echo "@----------------------@"
