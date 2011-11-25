@@ -104,7 +104,7 @@ while true; do
   echo "Minimum RAM in Megabytes to allocate server (512 - 4096):"
   read MINRAM
   while true; do
-     if [ -z "$MINRAM ]; then
+     if [ -z "$MINRAM" ]; then
        MINRAM=$D_MINRAM
        break
      fi
