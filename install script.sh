@@ -77,23 +77,20 @@ echo "@       CONFIG TIME[woot?]!!!      @"
 echo "------------------------------------"
 
 dots
-cd /root/scipts/
-sudo chmod +x start.sh
-sudo chmod +x run.sh
-sudo chmod +x stop.sh
-sudo chmod +x restart.sh
-sudo chmod +x backuphr.sh
-sudo chmod +x backupday.sh
-sudo chmod +x change-murmur-super-pass.sh
+sudo chmod +x /root/scipts/start.sh
+sudo chmod +x /root/scipts/run.sh
+sudo chmod +x /root/scipts/stop.sh
+sudo chmod +x /root/scipts/restart.sh
+sudo chmod +x /root/scipts/backuphr.sh
+sudo chmod +x /root/scipts/backupday.sh
+sudo chmod +x /root/scipts/change-murmur-super-pass.sh
 
 echo ""
 
 dots
 
 echo Congfiging screen!
-cd /
-cd /etc/
-echo startup_message off >> screenrc
+echo startup_message off >> /etc/screenrc
 
 echo Editing cron!
 dots
