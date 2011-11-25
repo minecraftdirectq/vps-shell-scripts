@@ -12,6 +12,8 @@
 # Description:    Starts the craftbukkit.jar server
 # Tyr, what did i tell you! James can you put back the "core's to run on". I like that tweek it will help us cus
 # we can than offer more cores. Tyr stop going and telling people to do things that i said i liked?
+# You're both right. Gravy: the cores option is not really directly for the bukkit server, it is for the java garbage collection; but telling the JRE to use parallel (threaded) garbage collection should help (it might normally choose to do this on its' own anyway :P )
+# Tyr: I've removed the option telling the GC how many threads to use. After reviewing it, it would be better to tell it the number of cores (no threads like I had previously) BUT it's probably even better to let the JRE decide for itself. 
 ### END INIT INFO
 
 # This init.d script is based off the one which can be found at 
@@ -50,11 +52,8 @@ DATE = `date "+%Y.%m.%d-%H:%M"`
 # URL for updating craftbukkit
 BUKKIT_URL = http://ci.craftbukkit.org/job/dev-CraftBukkit/promotion/latest/Recommended/artifact/target/craftbukkit-0.0.1-SNAPSHOT.jar
 
-# Old invocation including CPU count
-#INVOCATION = "java -Xms$MINRAM -Xmx$MAXRAM -XX:ParallelGCThreads=$CPU_COUNT -jar craftbukkit.jar nogui"
-
 # Invocation for starting craftbukkit server
-INVOCATION = "java -Xms$MINRAM -Xmx$MAXRAM  -jar craftbukkit.jar nogui"
+INVOCATION = "java -Xms$MINRAM -Xmx$MAXRAM -XX:+UseParallelGC  -jar craftbukkit.jar nogui"
 
 # Used to check who the user is
 ME = `whoami`
