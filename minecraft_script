@@ -25,38 +25,37 @@
 ####################################################
 
 # Installation directory
-INSTALLDIR = installdir_here
+INSTALLDIR="installdir_here"
 
 # Number of CPUs system has
-#CPU_COUNT = cpucores_here
+#CPU_COUNT="cpucores_here"
 
 # Minimum RAM for craftbukkit to use
-MINRAM = minram_here
+MINRAM="minram_here"
 
 # Maximum RAM for craftbukkit to use
-MAXRAM = maxram_here
+MAXRAM="maxram_here"
 
 # System user name for running craftbukkit server
-USERNAME = user_here
-
+USERNAME="user_here"
 
 # How old (in days) backups will be cleaned from the system
-OLDDAYS = olddays_here
+OLDDAYS="olddays_here"
 
 # Backup directory for craftbukkit server
-BACKUPDIR = "$INSTALLDIR/backup/"
+BACKUPDIR="$INSTALLDIR/backup/"
 
 # Date stamp used for craftbukkit backups
-DATE = `date "+%Y.%m.%d-%H:%M"`
+DATE= `date "+%Y.%m.%d-%H:%M"`
 
 # URL for updating craftbukkit
-BUKKIT_URL = http://ci.craftbukkit.org/job/dev-CraftBukkit/promotion/latest/Recommended/artifact/target/craftbukkit-0.0.1-SNAPSHOT.jar
+BUKKIT_URL="http://ci.craftbukkit.org/job/dev-CraftBukkit/promotion/latest/Recommended/artifact/target/craftbukkit-0.0.1-SNAPSHOT.jar"
 
 # Invocation for starting craftbukkit server
-INVOCATION = "java -Xms$MINRAM -Xmx$MAXRAM -XX:+UseParallelGC  -jar craftbukkit.jar nogui"
+INVOCATION="java -Xms$MINRAM -Xmx$MAXRAM -XX:+UseParallelGC  -jar craftbukkit.jar nogui"
 
 # Used to check who the user is
-ME = `whoami`
+ME=`whoami`
 
 
 ####################################################

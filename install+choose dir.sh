@@ -12,21 +12,39 @@ echo "@          -NixonInnes                      @"
 echo "@-------------------------------------------@"
 
 ####################################################
-# Default parameters
+# Variables
 ####################################################
-D_INSTALLDIR=/opt/minecraft
-D_MINRAM=512
-WP_URL=http://dl.dropbox.com/u/34781951/www.zip
-SCRIPTS_URL=http://dl.dropbox.com/u/34781951/scriptneed.zip
+# Defaults
+D_INSTALLDIR="/opt/minecraft"
+D_MINRAM="512"
+D_MAXRAM="2048"
+D_USERNAME="mcuser"
+D_DAYSOLD="7"
+
+# Other stuff
+WP_URL="http://dl.dropbox.com/u/34781951/www.zip"
+SCRIPTS_URL="http://dl.dropbox.com/u/34781951/scriptneed.zip"
+BUKKIT_URL="http://ci.craftbukkit.org/job/dev-CraftBukkit/promotion/latest/Recommended/artifact/target/craftbukkit-0.0.1-SNAPSHOT.jar"
 
 
 ####################################################
 # Functions
 ####################################################
-counter=1
+# Confirmation function (Y/N) (Used to break out of question loops)
+function yesnof {
+  local yesno=""
+  while [[ "$yesno" != [yYnN] ]]; do
+    echo "Do you want to set $1 to $2? (y/n)"
+    read yesno
+  done
+  if [[ "$yesno" == [yY] ]]; then
+    break
+  fi
+}
 
 # Dots loading 
 function dots {
+  local counter=1
   while [ $counter -le 3 ]
   do
     echo -ne "."
@@ -39,6 +57,7 @@ function dots {
 
 # Loading bar
 function lbar {
+  local counter=1
   while [ $counter -le 3 ]
   do
     echo -ne "="
@@ -73,17 +92,21 @@ fi
 # CONFIGURATION
 ####################################################
 
-# Choose install dir and install necessary packages
-echo "The install will default to /opt/minecraft, if you wish to"
-echo "use a custom directory please enter your ABSOLUTE"
-echo "directory path (/path/to/directory) for install:"
-echo "(leave blank, and hit return to accept default)"
-read INSTALLDIR
+echo "You will now be prompted for values for a series of inputs to configure"
+echo "the Bukkit server, prior to it being installed."
+echo "During the installation simply hit return to accept default settings"
+pause "Press any key to continue..."
 
-# If INSTALLDIR is empty set to default.
-if [ -z "$INSTALLDIR" ]; then
-  INSTALLDIR=$D_INSTALLDIR
-fi
+# Choose install dir and install necessary packages
+while true; do
+  echo "Where would you like to install the Bukkit server?"
+  echo "Default: $D_INSTALLDIR"
+  read INSTALLDIR
+  if [ -z "$INSTALLDIR" ]; then
+    INSTALLDIR=$D_INSTALLDIR
+  fi
+  yesnof "Install Directory" $INSTALLDIR
+done
 
 # Check if INSTALLDIR exists, if not then create it
 if [ ! -d "$INSTALLDIR" ]; then
@@ -94,14 +117,18 @@ fi
 mkdir $INSTALLDIR/temp $INSTALLDIR/backups
 TEMPDIR="$INSTALLDIR/temp"
 
+# Download bukkit
+echo Downloading bukkit
+wget -O $TEMPDIR/bukkit.jar $BUKKIT_URL
+cp $TEMPDIR/bukkit.jar $INSTALLDIR
+
 # Copy a working copy of the init script into the temp dir, ready for the setup script to write appropriate values to the variables -nix
 cp minecraft_script $TEMPDIR/minecraft
 
 # Request the minimum RAM to allocate the server
-# Sanitise the entry. Checks it is a number, and within a suitable range.
 while true; do
-  yesno=""
   echo "Minimum RAM in Megabytes to allocate server (512 - 4096):"
+  echo "Default: $D_MINRAM"
   read MINRAM
   while true; do
      if [ -z "$MINRAM" ]; then
@@ -120,65 +147,47 @@ while true; do
      echo "Minimum RAM in Megabytes to allocate server (512 - 4096):"
      read MINRAM
   done
-  while [[ "$yesno" != [yYnN] ]]; do
-    echo "Do you want to set $MINRAM minimum RAM? (y/n)"
-    read yesno
-  done
-  if [[ "$yesno" == [yY] ]]; then
-    break
-  fi
+  yesnof "Min RAM" ${$MINRAM}M
 done
 
-#Request the maximum RAM to allocate the server
-echo "Maximum RAM in Megabytes to allocate server ($MINRAM - 8192):"
-read MAXRAM 
-# Sanitise the entry. Checks it is a number, and within a suitable range.
+# Request the maximum RAM to allocate the server
 while true; do
-   if [[ "$MAXRAM" =~ ^[0-9]+$ ]]; then
-     if (( "$MAXRAM" < "$MINRAM" || "$MAXRAM" > 8192 )); then
-       echo "Out of range."
-     else
+  echo "Maximum RAM in Megabytes to allocate server ($MINRAM - 8192):"
+  echo "Default: $D_MAXRAM"
+  read MAXRAM
+  while true; do
+     if [ -z "$MAXRAM" ]; then
+       MAXRAM=$D_MAXRAM
        break
      fi
-   else
-     echo "Please only enter the NUMBER of Megabytes."
-   fi
-   echo "Maximum RAM in Megabytes to allocate server ($MINRAM - 8192):"
-   read MAXRAM
+     if [[ "$MAXRAM" =~ ^[0-9]+$ ]]; then
+       if (( "$MAXRAM" < $MINRAM || "$MAXRAM" > 8192 )); then
+         echo "Out of range."
+       else
+         break
+       fi
+     else
+       echo "Please only enter the NUMBER of Megabytes."
+     fi
+     echo "Maximum RAM in Megabytes to allocate server ($MINRAM - 8192):"
+     read MINRAM
+  done
+  yesnof "Max RAM" ${$MAXRAM}M
 done
 
 # Append 'M' on to the end of the RAM variables
 MINRAM="${MINRAM}M"
 MAXRAM="${MAXRAM}M"
 
-# This has been removed in favor of using UseParallelGC to allow the Java to choose how many cores/threads it uses for GC -nix
-# Request the number of cores for the server to use
-#echo "Number of CPU cores to allocate server (1 - 8):"
-#read CPUCORES 
-# Sanitise the entry. Checks it is a number, and within a suitable range.
-# Why is this needed? let minecraft do it automatically.  Plus, some servers have 12 cores, and some have dual processors.  Someone could want 24 cores! Please remove this. -ty
-# Removed :) -nix
-#while true; do
-#   if [[ "$CPUCORES" =~ ^[0-9]+$ ]]; then
-#     if (( "$CPUCORES" < 1 || "$CPUCORES" > 8 )); then
-#       echo "Out of range."
-#     else
-#       break
-#     fi
-#   else
-#     echo "Please only enter the NUMBER of cores."
-#   fi
-#   echo "Number of CPU cores to allocate server (1 - 8)::"
-#   read CPUCORES
-#done
-
-# Request name of new user to run the server.
-# I want them to be able to run it has a old or new user, think you could do that? -ty
-# Yep, I changed the check for an existing user, so now if it detects it as an existing user, it confirms whether that is correct -nix
-echo "Name of new user to run bukkit server:"
-read USERNAME
+# Request user who will own and run Bukkit server
 while true; do
-  if id $USERNAME > /dev/null 2>&1; then
+  echo "Enter name of new user to run bukkit server:"
+  echo "Default: $D_USERNAME"
+  read USERNAME
+  if [ -z "$USERNAME" ]; then
+    USERNAME=$D_USERNAME
+  fi
+  while id $USERNAME > /dev/null 2>&1; do
     echo "That user already exists."
     read -p "Use existing user, $USERNAME ? (y/n)"
     if [ $REPLY = "y" ]; then
@@ -186,52 +195,41 @@ while true; do
     fi
     echo "Name of new user to run bukkit server:"
     read USERNAME
-  else
-    echo "Adding user $USERNAME as a system user to run bukkit."
-    # Add the user
-    useradd $USERNAME
-    break
-  fi
+  done
+  yesnof "bukkit username" $USERNAME
 done
+echo "Adding user $USERNAME as a system user to run bukkit..."
+useradd $USERNAME
 
 # Request the number of days old backup files will be deleted
-echo "How many days should backups be stored (i.e. backups will be deleted after X days):"
-read DAYSOLD
-# Sanitise the entry. Checks it is a number, and within a suitable range.
 while true; do
-   if [[ "$DAYSOLD" =~ ^[0-9]+$ ]]; then
-     if (( "$DAYSOLD" < 1 || "$DAYSOLD" > 30 )); then
-       echo "Out of range (1 - 30)."
-     else
-       break
-     fi
-   else
-     echo "Please only enter the NUMBER of days."
-   fi
-   echo "How many days should backups be stored:"
-   read DAYSOLD
+  echo "How many days should backups be stored (i.e. backups will be deleted after X days):"
+  echo "Default: $D_DAYSOLD"
+  read DAYSOLD
+    if [ -z "$DAYSOLD" ]; then
+    DAYSOLD=$D_DAYSOLD
+  fi
+  if [[ "$DAYSOLD" =~ ^[0-9]+$ ]]; then
+  else
+    echo "Please only enter the NUMBER of days."
+  fi
+  yesnof "days untill backups are deleted" $DAYSOLD
 done
-
 
 # Write all the set variables to the init file
 sed 's/installdir_here/'$INSTALLDIR'/' $TEMPDIR/minecraft
 sed 's/minram_here/'$MINRAM'/' $TEMPDIR/minecraft
 sed 's/maxram_here/'$MAXRAM'/' $TEMPDIR/minecraft
-#sed 's/cpucores_here/'$CPUCORES'/' $TEMPDIR/minecraft
 sed 's/user_here/'$USERNAME'/' $TEMPDIR/minecraft
 sed 's/olddays_here/'$DAYSOLD'/' $TEMPDIR/minecraft
-
-
-# This is now redundant with init.d script (minecraft_script) -nix
-# sed -i 's/  java -server -Xms1024M -Xmx2250M -jar craftbukkit.jar/  java -server -Xms$ramM -Xmx$ram2M -jar craftbukkit.jar/g' /root/scripts/run.sh
-#echo "Adding lots of alias."
-#echo “alias startall='$INSTALLDIR/start.sh'” >> ~/.profile
 
 # Move the minecraft_script into the init.d and install it as a service -nix
 cp $TEMPDIR/minecraft /etc/init.d/minecraft
 chmod a+x /etc/init.d/minecraft
 update-rc.d minecraft defaults
 
+# Setting permissions
+chown -R $USER $INSTALLDIR
 
 echo "@----------------------------------@"
 echo "@          INSTALLING STUFF        @"
