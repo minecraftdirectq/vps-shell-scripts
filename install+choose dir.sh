@@ -239,11 +239,11 @@ sed -i -e 's;installdir_here;'$INSTALLDIR';'\
  $TEMPDIR/minecraft
 
 # Move the minecraft_script into the init.d and install it as a service -nix
-#echo "Moving created Bukkit initialisation script to init.d..."
-#cp $TEMPDIR/minecraft /etc/init.d/minecraft
-#chmod a+x /etc/init.d/minecraft
+echo "Moving created Bukkit initialisation script to init.d..."
+cp $TEMPDIR/minecraft /etc/init.d/minecraft
+chmod a+x /etc/init.d/minecraft
 echo "Installing script..."
-#update-rc.d minecraft defaults
+update-rc.d minecraft defaults
 
 # Setting permissions
 echo "Setting user permissions for Bukkit server..."
@@ -262,11 +262,11 @@ echo "(Sun java) and accept the installation of other various packages."
 pause "Press any key to continue..."
 
 # Install Java & others
-#cat deb http://archive.canonical.com/ lucid partner >> /etc/apt/sources.list
-#apt-get update
-#apt-get install sun-java6-jre
-#apt-get install screen rdiff rdiff-backup
-#apt-get update
+cat deb http://archive.canonical.com/ lucid partner >> /etc/apt/sources.list
+apt-get update
+apt-get install sun-java6-jre
+apt-get install screen rdiff rdiff-backup
+apt-get update
 
 # I think the following mysql / php / httpd/apache should be an optional install -nix
 echo "@----------------------------------@"
@@ -278,17 +278,16 @@ echo "setting up MySql"
 echo "Get ready to set it up :D"
 pause "Press any key to continue..."
 
-#apt-get install mysql-server mysql-client
+apt-get install mysql-server mysql-client
 
 echo "Installing Apache2 and php5"
 
+apt-get install apache2
+apt-get install php5 libapache2-mod-php5
 
-#apt-get install apache2
-#apt-get install php5 libapache2-mod-php5
+/etc/init.d/apache2 restart
 
-#/etc/init.d/apache2 restart
-
-#apt-get install php5-mysql php5-curl php5-gd php5-idn php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-ming php5-ps php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl
+apt-get install php5-mysql php5-curl php5-gd php5-idn php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-ming php5-ps php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl
 
 echo "Get ready to config stuff.... Web server to reconfigure automatically: <-- apache2"
 echo "Configure database for phpmyadmin with dbconfig-common? <-- No"
@@ -313,6 +312,6 @@ echo "Rebooting To Finnish :>!"
 
 dots
 
-#shutdown -r now
+shutdown -r now
 # ? shutdown -r now -nix
 # Actually a much better command nix.. good thinking! -ty
