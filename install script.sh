@@ -1,12 +1,12 @@
 #!/bin/bash
 echo ""
 echo "@-------------------------------------------@"
-echo "@     Gravypod's Shell Server settup        @"
-echo "@     Credits                               @"
-echo "@     -Khobbits                             @"
-echo "@     -Darklust                             @"
-echo "@     -Tyrant                               @"
-echo "@     -NixonInnes [inspiration/dev          @"
+echo "@   Gravypod's Shell Server settup          @"
+echo "@   Credits              ----               @"
+echo "@   -Khobbits           /  |  \             @"
+echo "@   -Darklust              |                @"
+echo "@   -Tyrant                 [pick]          @"
+echo "@   -NixonInnes [inspiration/dev also cool] @"
 echo "@-------------------------------------------@"
 
 ####################################################
@@ -96,11 +96,11 @@ echo Editing cron!
 dots
 echo Dumping file!
 crontab -l > crondump
-echo @reboot /path/to/script/start.sh >> crondump
-echo @weekly /path/to/script/stop.sh >> crondump
-echo @hourly /path/to/script/restart.sh >> crondump
-echo @hourly /path/to/script/backuphr.sh >> crondump
-echo @daily /path/to/script/backupday.sh >> crondump
+echo @reboot /root/scripts/start.sh >> crondump
+echo @weekly /root/scripts/stop.sh >> crondump
+echo @hourly /root/scripts/restart.sh >> crondump
+echo @hourly /root/scripts/backuphr.sh >> crondump
+echo @daily /root/scripts/backupday.sh >> crondump
 crontab crondump
 rm crondump
 rm scriptneed.zip
@@ -111,15 +111,6 @@ echo @----------------------------------@
 echo @ Server startup @
 echo @----------------------------------@
 
-
-
-echo Minimum RAM in Megabytes:
-read ram
-echo ""
-echo Max Ram in Megabytes:
-read ram2
-
-sed -i 's/java -server -Xms1024M -Xmx2250M -jar craftbukkit.jar/java -server -Xms$ramM -Xmx$ram2M -jar craftbukkit.jar/g' /root/scripts/run.sh
 
 echo Adding lots of alias.
 echo “alias startall='/root/scripts/start.sh'” >> ~/.profile
@@ -138,31 +129,18 @@ apt-get install mysql-server mysql-client
 
 echo Installing Apache2 and php5
 
-
 apt-get install apache2
 apt-get install php5 libapache2-mod-php5
 
 
-
 apt-get install php5-mysql php5-curl php5-gd php5-idn php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-ming php5-ps php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl
 
-rm /var/www/index.html
-wget http://dl.dropbox.com/u/34781951/www.zip
-mv www.zip /var/www/
-unzip /var/www/www.zip
-rm /var/www/www.zip
 
 echo @----------------------------------@
 echo @ PhpMyAdmin @
 echo @----------------------------------@
 
-
 apt-get install phpmyadmin
-
-ln -s /var/www/
-
-wget http://ci.bukkit.org/job/dev-CraftBukkit/1502/artifact/target/craftbukkit-1.0.0-SNAPSHOT.jar craftbukkit.jar
-mv /root/minecraft
 
 echo "@----------------------@"
 echo "Rebooting To Finnish :>!"
